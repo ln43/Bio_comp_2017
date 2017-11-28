@@ -7,8 +7,6 @@ TTS_pos=np.array([ 33,  83, 133, 183, 233, 283, 333, 383, 433, 483])
 
 # TTS_pos  = (tts['TTS_pos'].values/DELTA_X).astype(int)
 
-
-Barr_fix=np.array([  0,  50, 100, 150, 200, 250, 300, 350, 400, 450])
 genome=499
 
 # Get point to invert not in coding part
