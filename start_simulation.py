@@ -36,3 +36,24 @@ def inversion(TSS_pos,TTS_pos,strands,genome):
     
 strands=inversion(TSS_pos,TTS_pos,strands,genome)
 print(strands)
+
+
+################## STRUCTURE
+
+# Indiv 1 (tousgenesidentiques)
+# Simulation indiv1
+# 
+# for i in range(1,niter):
+#     prob_inv
+#     if prob_inv :
+#         -> inversion indiv 1
+#     prob_insertdel
+#     if prob_insertdel :
+#         -> insertion/deletion indiv 1
+#     -> Ecritures fichier individus 2
+#     -> Simulation indiv 2
+#     -> calcul fitness
+#     if meilleur fitness
+#         indiv 1 = indiv 2
+        
+        
