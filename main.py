@@ -14,6 +14,8 @@ RNAPs_genSC = 0.1
 #                       Functions                         #
 ###########################################################
 
+
+
 def create_config_file(config, config_file_path, TSS_file, SIGMA_0, RNAPS_NB): # DELTA_X, D, J_0, SIGMA_0, RNAPS_NB,
     # Create the directory
     # output_dir = "D_%d/delta_x_%d" %(D, DELTA_X)
@@ -35,6 +37,8 @@ def read_config_file(path):
     config.optionxform = str
     config.read(path)
     return config
+
+
 
 # Read the config files and return the values of each variable
 # this function will be useful when we are in another script
