@@ -261,12 +261,9 @@ def save_files(output_dir,
 ###########################################################
 #         Transcription Process (Simulation)              #
 ###########################################################
+def get_params(INI_file, output_dir):
 
-def start_transcribing(INI_file, output_dir):
-
-    ####################### Params info ###################
     config = read_config_file(INI_file)
-
     # get inputs infos from the config file
     GFF_file = config.get('INPUTS', 'GFF')
     TSS_file = config.get('INPUTS', 'TSS')
@@ -297,15 +294,15 @@ def start_transcribing(INI_file, output_dir):
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
 
-    # define the output directory
-    os.makedirs(output_dir, exist_ok=True)
-
     # path to the input files (remove the "params.ini" from the path)
     pth = INI_file[:-10]
     gff_df_raw = load_gff(pth+GFF_file)
     tss = load_tab_file(pth+TSS_file)
     tts = load_tab_file(pth+TTS_file)
     prot = load_tab_file(pth+Prot_file)
+
+    # define the output directory
+    os.makedirs(output_dir, exist_ok=True)
 
     # TSS_pos
     TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
@@ -357,6 +354,8 @@ def start_transcribing(INI_file, output_dir):
 
     ts_remain_all = np.array(ts_remain_all)/DELTA_X
     ts_remain_all = ts_remain_all.astype(int64)
+
+def start_transcribing(output_dir):
 
     # The number of times transcripts has been transcribed
     tr_nbr = np.zeros(len(tr_id), dtype=int)
@@ -645,7 +644,7 @@ def start_transcribing(INI_file, output_dir):
     print("Simulation completed successfully !! \nNumber of transcripts : \n")
     for i, v in enumerate(tr_nbr):
         print("Transcript{} : {}".format(i, v))
-         
+
     dic_tr_nbr = dict([[i,v] for i,v in enumerate(tr_nbr)])
     return(dic_tr_nbr)
     # return (GFF_file, TSS_file, TTS_file,
