@@ -307,7 +307,6 @@ def simulation():
     prot = load_tab_file(pth+Prot_file)
     params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
     i = individu(gff_df_raw, tss, tts, prot, params) 
-    #faire calculs
     for i in range(0, nb_iter):
         #faire des trucs
 	
