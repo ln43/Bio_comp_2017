@@ -50,6 +50,9 @@ print(strands)
 #     prob_insertdel
 #     if prob_insertdel :
 #         -> insertion/deletion indiv 1
+
+# Si pas de inversion ni insert/del, passer direct à l'itération suivante !
+
 #     -> Ecritures fichier individus 2
 #     -> Simulation indiv 2
 #     -> calcul fitness
