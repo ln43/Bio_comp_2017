@@ -741,3 +741,4 @@ class individu():
 	            RNAPs_tr, RNAPs_pos, RNAPs_unhooked_id,
 	            save_RNAPs_info, save_tr_info, save_Barr_sigma, save_Dom_size,
 	            cov_bp, tr_end)
+>>>>>>> 67bc66435ea815c70faf64153c46334d512f84cd
