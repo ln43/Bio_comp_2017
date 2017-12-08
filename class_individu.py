@@ -41,5 +41,26 @@ class individu():
 		else:
 			S=set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0]))
 	
-		self.strands[list(S)]=-self.strands[list(S)]
+		self.newstrands[list(S)]=-self.strands[list(S)]
+		
+	def indel(self) :
+		ind=np.random.randint(0,self.genome)
+		while set(np.ndarray.tolist(np.where(ind>self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(ind<self.TTS_pos)[0])): # test if ind belongs to non-coding part
+			ind=np.random.randint(0,self.genome)
+		prob=np.random.rand(1)
+		if prob<0.5 : # Insertion
+			print("insert")
+			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]+=1
+			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]+=1
+			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]+=1
+			self.newgenome+=1
+		else : # Deletion
+			print("deletion")
+			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]-=1
+			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]-=1
+			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
+			self.newgenome-=1
+		return TSS_pos,TTS_pos,Barr_fix,genome
+	
+		
 
