@@ -1,6 +1,5 @@
 class individu():
-	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X):
-#params : liste trucs csts
+	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, genes):
 		self.tts = tts
 		self.tss = tss
 		self.gff_df_raw=gff_df
@@ -21,6 +20,10 @@ class individu():
 		
 		self.strands = self.str2num(gff_df['strand'].values)
 		self.newstrands = np.copy(strands)
+		self.noms_genes = range(1, len(genes) + 1)
+		self.genes = genes
+		self.fitness = self.calcul_fitness(genes)
+		self.new_fitness = 0
 
 	def str2num(self, s):
 		s[s == '+'] = 1 #True
