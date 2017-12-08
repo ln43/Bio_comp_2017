@@ -310,58 +310,14 @@ def simulation():
     tts = load_tab_file(pth+TTS_file)
     prot = load_tab_file(pth+Prot_file)
     params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
-    i = individu(gff_df_raw, tss, tts, prot, params,DELTA_X)
+    ind = individu(gff_df_raw, tss, tts, prot, params,DELTA_X)
     #faire calculs
     for i in range(0, nb_iter):
         #faire des trucs
 
 
 
-'''def start_transcribing(INI_file, output_dir):
-
-    ####################### Params info ###################
-    config = read_config_file(INI_file)
-
-    # get inputs infos from the config file
-    GFF_file = config.get('INPUTS', 'GFF')
-    TSS_file = config.get('INPUTS', 'TSS')
-    TTS_file = config.get('INPUTS', 'TTS')
-    Prot_file = config.get('INPUTS', 'BARR_FIX')
-
-    # get values from the config file
-    m = config.getfloat('GLOBAL', 'm')
-    sigma_t = config.getfloat('GLOBAL', 'sigma_t')
-    epsilon = config.getfloat('GLOBAL', 'epsilon')
-
-    SIGMA_0 = config.getfloat('SIMULATION', 'SIGMA_0')
-    DELTA_X = config.getfloat('SIMULATION', 'DELTA_X')
-    DELTA_T = config.getfloat('SIMULATION', 'DELTA_T')
-    RNAPS_NB = config.getint('SIMULATION', 'RNAPS_NB')
-    ITERATIONS_NB = config.getfloat('SIMULATION', 'ITERATIONS_NB')
-    OUTPUT_STEP = config.getfloat('SIMULATION', 'OUTPUT_STEP')
-
-    GYRASE_CONC = config.getfloat('SIMULATION', 'GYRASE_CONC')
-    TOPO_CONC = config.getfloat('SIMULATION', 'TOPO_CONC')
-    TOPO_CTE = config.getfloat('SIMULATION', 'TOPO_CTE')
-    GYRASE_CTE = config.getfloat('SIMULATION', 'GYRASE_CTE')
-    TOPO_EFFICIENCY = config.getfloat('SIMULATION', 'TOPO_EFFICIENCY')
-    k_GYRASE = config.getfloat('SIMULATION', 'k_GYRASE')
-    x0_GYRASE = config.getfloat('SIMULATION', 'x0_GYRASE')
-    k_TOPO = config.getfloat('SIMULATION', 'k_TOPO')
-    x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
-    #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
-    #$print("SIGMA_0 --> ", SIGMA_0)
-
-    # define the output directory
-    os.makedirs(output_dir, exist_ok=True)
-
-    # path to the input files (remove the "params.ini" from the path)
-    pth = INI_file[:-10]
-    gff_df_raw = load_gff(pth+GFF_file)
-    tss = load_tab_file(pth+TSS_file)
-    tts = load_tab_file(pth+TTS_file)
-    prot = load_tab_file(pth+Prot_file)
-
+def start_transcribing(INI_file, output_dir):
     # TSS_pos
     TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
 
@@ -697,18 +653,21 @@ def simulation():
     #save_mean_sig_wholeGenome = np.array(save_mean_sig_wholeGenome)
     #save_files(output_dir, Barr_pos, Barr_type, Dom_size, Barr_ts_remain, Barr_sigma, tr_nbr, tr_times, save_RNAPs_info, save_tr_info, save_Barr_sigma, save_Dom_size, save_mean_sig_wholeGenome, DELTA_X, RNAPs_genSC, RNAPs_tr, RNAPs_pos, RNAPs_unhooked_id, init_rate, Kon, RNAPS_NB, SIGMA_0, GYRASE_CONC, TOPO_CONC)
 
-    print("Simulation completed successfully !! \nNumber of transcripts : \n")
-    for i, v in enumerate(tr_nbr):
-        print("Transcript{} : {}".format(i, v))
+    # print("Simulation completed successfully !! \nNumber of transcripts : \n")
+    # for i, v in enumerate(tr_nbr):
+    #     print("Transcript{} : {}".format(i, v))
 
-    dic_tr_nbr = dict([[i,v] for i,v in enumerate(tr_nbr)])
-    return(dic_tr_nbr)
     # return (GFF_file, TSS_file, TTS_file,
     #         ITERATIONS_NB, RNAPS_NB,
     #         tr_nbr, tr_times, init_rate,
     #         RNAPs_tr, RNAPs_pos, RNAPs_unhooked_id,
     #         save_RNAPs_info, save_tr_info, save_Barr_sigma, save_Dom_size,
     #         cov_bp, tr_end)
+
+    # dic_tr_nbr = dict([[i,v] for i,v in enumerate(tr_nbr)])
+    # return(dic_tr_nbr)
+
+    return(tr_nbr)
 
 
 # This function for resuming the simulation by reading npz files
