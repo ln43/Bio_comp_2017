@@ -23,11 +23,6 @@ class individu():
 	    return Barr_sigma
 
 	def start_transcribing():
-
-
-	    # Dict of transcription units with the list of tts belonging to TU.
-	     = get_TU_tts(tss, tts)
-
 	    # The RNAPs id
 	    RNAPs_id = np.full(RNAPS_NB, range(0, RNAPS_NB), dtype=int)
 
