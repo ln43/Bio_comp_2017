@@ -309,30 +309,29 @@ def simulation():
     tss = load_tab_file(pth+TSS_file)
     tts = load_tab_file(pth+TTS_file)
     prot = load_tab_file(pth+Prot_file)
+    # Genome size
+    genome_size = get_genome_size(gff_df_raw)
+    gff_df = rename_gff_cols(gff_df_raw)
     params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
-    ind = individu(gff_df_raw, tss, tts, prot, params,DELTA_X)
+    ind = individu(gff_df, tss, tts, prot, genome_size, params,DELTA_X)
     #faire calculs
     for i in range(0, nb_iter):
         #faire des trucs
 
 
 
-def start_transcribing(INI_file, output_dir):
+def start_transcribing(params, ind):
     # TSS_pos
-    TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
+    # TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
 
     # Kon
-    Kon = tss['TSS_strength'].values
+    Kon = ind.tss['TSS_strength'].values
 
     # Poff
-    Poff = tts['TTS_proba_off'].values
-
-    # Genome size
-    genome_size = get_genome_size(gff_df_raw)
-    gff_df = rename_gff_cols(gff_df_raw)
+    Poff = ind.tts['TTS_proba_off'].values
 
     # Dict of transcription units with the list of tts belonging to TU.
-    TU_tts = get_TU_tts(tss, tts)
+    TU_tts = get_TU_tts(ind.tss, ind.tts)
 
     # The RNAPs id
     RNAPs_id = np.full(RNAPS_NB, range(0, RNAPS_NB), dtype=int)
@@ -347,7 +346,7 @@ def start_transcribing(INI_file, output_dir):
     strands = str2num(gff_df['strand'].values)
 
     # list of all possible transcripts
-    tr_id, tr_strand, tr_start, tr_end, tr_rate, tr_size, ts_beg_all_trs, ts_remain_all = get_tr_info(tss, tts, TU_tts, Kon, Poff)
+    tr_id, tr_strand, tr_start, tr_end, tr_rate, tr_size, ts_beg_all_trs, ts_remain_all = get_tr_info(ind.tss, ind.tts, TU_tts, Kon, Poff)
 
     # convert all variables to numpy array
     tr_id = np.array(tr_id)
@@ -372,9 +371,9 @@ def start_transcribing(INI_file, output_dir):
     # The number of times transcripts has been transcribed
     tr_nbr = np.zeros(len(tr_id), dtype=int)
 
-    genome = int(genome_size/DELTA_X)
+    genome = int(ind.genome_size/DELTA_X)
 
-    Barr_fix = (prot['prot_pos'].values/DELTA_X).astype(int)
+    Barr_fix = (ind.prot['prot_pos'].values/DELTA_X).astype(int)
 
     # just for the echo we can assign it directely
     Barr_pos = np.copy(Barr_fix)

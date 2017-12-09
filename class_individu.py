@@ -2,7 +2,7 @@ class individu():
 	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, genes):
 		self.tts = tts
 		self.tss = tss
-		self.gff_df_raw=gff_df
+		self.gff_df=gff_df
 		self.prot = prot
 
 		self.TTS_pos = (tts['TTS_pos'].values/DELTA_X).astype(int)
@@ -82,4 +82,3 @@ class individu():
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]-=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
 			self.newgenome-=1
-
