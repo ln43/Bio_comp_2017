@@ -22,6 +22,7 @@ class individu():
 		self.newstrands = np.copy(strands)
 		self.noms_genes = range(1, len(genes) + 1)
 		self.genes = genes
+		self.newgenes = np.copy(self.genes)
 		self.fitness = self.calcul_fitness(genes)
 		self.new_fitness = 0
 
@@ -39,12 +40,30 @@ class individu():
 		while set(np.ndarray.tolist(np.where(inv2>self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2<self.TTS_pos)[0])):  # test if inv2 belongs to non-coding part
 			inv2=np.random.randint(0,self.genome)
 
-		if inv1>inv2:
-			S=set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).union(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0]))
-		else:
-			S=set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0]))
-	
-		self.newstrands[list(S)]=-self.strands[list(S)]
+		if inv1>inv2: # Invert extern part
+			S1=np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])
+			S2=np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])
+			S=S2+S1
+			
+			newS1=S[0:len(S1)]
+			newS2=S[len(S1):]
+			newS1.reverse()
+			newS2.reverse()
+			
+			self.newgenes=np.copy(self.genes)
+			self.newgenes[S1]=self.genes[newS1]
+			self.newgenes[S2]=self.genes[newS2]
+			
+			self.newstrands=np.copy(self.strands)
+			self.newstrands[S1]=-self.strands[newS1]
+			self.newstrands[S2]=-self.strands[newS2]
+			
+		else: # Invert intern part
+			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
+			S2=np.copy(S)
+			S.reverse()
+			self.newgenes[S2]=self.genes[S]
+			self.newstrands[S2]=-self.strands[S]
 		
 	def indel(self) :
 		ind=np.random.randint(0,self.genome)
