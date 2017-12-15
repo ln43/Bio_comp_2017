@@ -300,6 +300,8 @@ def simulation():
     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
 
     nb_iter = config.getfloat('SIMULATION', 'nb_iter')
+    p_inv = config.getfloat('SIMULATION', 'p_inv')
+    p_indel = config.getfloat('SIMULATION', 'p_indel')
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
 
