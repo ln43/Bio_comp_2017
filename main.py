@@ -347,7 +347,7 @@ def simulation():
 
     #faire calculs
     events = [0]
-    for i in range(0, nb_iter):
+    for i in range(1, nb_iter+1):
         print(i)
         # test_modif=False
         inversion=False
@@ -381,8 +381,9 @@ def simulation():
 
     colormap = np.array(['grey','r','g', 'b', 'brown'])
     labels = np.array(['No event', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
-    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=50, c=colormap[events], label=labels[events])
-    # plt.legend()
+    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=50, c=colormap[events])
+    plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
+    #plt.legend(labels[events])
     plt.show()
     return(fitnesses)
 
