@@ -312,7 +312,12 @@ def simulation():
     # Genome size
     genome_size = get_genome_size(gff_df_raw)
     gff_df = rename_gff_cols(gff_df_raw)
-    params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
+    params = {'sigma_t':sigma_t,'epsilon':epsilon, 'SIGMA_0':SIGMA_0, 'DELTA_X':DELTA_X, \
+    'DELTA_T':DELTA_T, 'RNAPS_NB':RNAPS_NB, 'ITERATIONS_NB':ITERATIONS_NB, \
+    'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
+    'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
+    'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
+    #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
     ind = individu(gff_df, tss, tts, prot, genome_size, params,DELTA_X)
     #faire calculs
     for i in range(0, nb_iter):
@@ -320,7 +325,7 @@ def simulation():
 
 
 
-def start_transcribing(params, ind):
+def start_transcribing(p, ind):
     # TSS_pos
     # TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
 
@@ -334,13 +339,13 @@ def start_transcribing(params, ind):
     TU_tts = get_TU_tts(ind.tss, ind.tts)
 
     # The RNAPs id
-    RNAPs_id = np.full(RNAPS_NB, range(0, RNAPS_NB), dtype=int)
+    RNAPs_id = np.full(p['RNAPS_NB'], range(0, p['RNAPS_NB']), dtype=int)
 
     # The position of RNAPs
-    RNAPs_pos = np.full(RNAPS_NB, NaN) #np.zeros(RNAPS_NB, dtype=int)
+    RNAPs_pos = np.full(p['RNAPS_NB'], NaN) #np.zeros(RNAPS_NB, dtype=int)
 
     # RNAPs_last_pos
-    RNAPs_last_pos = np.full(RNAPS_NB, NaN) #np.zeros(RNAPS_NB, dtype=int)
+    RNAPs_last_pos = np.full(p['RNAPS_NB'], NaN) #np.zeros(RNAPS_NB, dtype=int)
 
     # Strands orientation
     strands = str2num(gff_df['strand'].values)
@@ -352,20 +357,20 @@ def start_transcribing(params, ind):
     tr_id = np.array(tr_id)
     tr_strand = np.array(tr_strand)
 
-    tr_start = np.array(tr_start)/DELTA_X
+    tr_start = np.array(tr_start)/p['DELTA_X']
     tr_start = tr_start.astype(int64)
 
-    tr_end = np.array(tr_end)/DELTA_X
+    tr_end = np.array(tr_end)/p['DELTA_X']
     tr_end = tr_end.astype(int64)
 
     tr_rate = np.array(tr_rate)
 
-    tr_size = np.array(tr_size)/DELTA_X
+    tr_size = np.array(tr_size)/p['DELTA_X']
     tr_size = tr_size.astype(int64)
 
     ts_beg_all_trs = np.array(ts_beg_all_trs)
 
-    ts_remain_all = np.array(ts_remain_all)/DELTA_X
+    ts_remain_all = np.array(ts_remain_all)/p['DELTA_X']
     ts_remain_all = ts_remain_all.astype(int64)
 
     # The number of times transcripts has been transcribed
@@ -373,7 +378,7 @@ def start_transcribing(params, ind):
 
     genome = int(ind.genome_size/DELTA_X)
 
-    Barr_fix = (ind.prot['prot_pos'].values/DELTA_X).astype(int)
+    Barr_fix = (ind.prot['prot_pos'].values/p['DELTA_X']).astype(int)
 
     # just for the echo we can assign it directely
     Barr_pos = np.copy(Barr_fix)
@@ -381,7 +386,7 @@ def start_transcribing(params, ind):
     Dom_size = np.append(Dom_size, genome-Barr_fix[-1]+Barr_fix[0]) # !! change Barr_fix to Barr_pos case : O | |
 
     Barr_type = np.full(len(Barr_fix), 0, dtype=int)
-    Barr_sigma = np.full(len(Barr_fix), SIGMA_0)
+    Barr_sigma = np.full(len(Barr_fix), p['SIGMA_0'])
 
     # here we need to make an Barr_ts_remain
     # to track the position of each RNAPol
@@ -391,15 +396,15 @@ def start_transcribing(params, ind):
 
     ######### Variables used to get the coverage ##########
 
-    id_shift_fwd = list(range(1, genome))
+    id_shift_fwd = list(range(1, ind.genome))
     id_shift_fwd.append(0)
     id_shift_fwd = np.array(id_shift_fwd)
-    id_shift_bwd = list(range(0, genome-1))
-    id_shift_bwd.insert(0, genome-1)
+    id_shift_bwd = list(range(0, ind.genome-1))
+    id_shift_bwd.insert(0, ind.genome-1)
     id_shift_bwd = np.array(id_shift_bwd)
 
-    cov_bp = np.arange(0, genome_size, DELTA_X)
-    cov_bp = np.resize(cov_bp, genome)
+    cov_bp = np.arange(0, ind.genome_size, p['DELTA_X'])
+    cov_bp = np.resize(cov_bp, ind.genome)
 
     #mmmm sigma = np.full(genome, SIGMA_0)
 
@@ -411,10 +416,10 @@ def start_transcribing(params, ind):
     tr_times = col.defaultdict(list)
 
     # numpy array where will save all RNAPs info
-    save_RNAPs_info = np.full([RNAPS_NB, 2, int(ITERATIONS_NB/DELTA_T)], np.nan) # nbr d'ele (cols)
+    save_RNAPs_info = np.full([p['RNAPS_NB'], 2, int(p['ITERATIONS_NB']/p['DELTA_T'])], np.nan) # nbr d'ele (cols)
 
     # the same for transcripts info
-    save_tr_info = np.full([len(tr_id), 2, int(ITERATIONS_NB/DELTA_T)], np.nan)
+    save_tr_info = np.full([len(tr_id), 2, int(p['ITERATIONS_NB']/p['DELTA_T'])], np.nan)
 
     # in those variables, we will save/append info in each time step to save them as --> all_res ;-)
     save_Barr_sigma = list()
@@ -425,18 +430,18 @@ def start_transcribing(params, ind):
 
     RNAPs_unhooked_id = np.copy(RNAPs_id)
 
-    RNAPs_strand = np.full(RNAPS_NB, NaN)
-    ts_beg = np.full(RNAPS_NB, NaN)
-    ts_remain = np.full(RNAPS_NB, NaN)
+    RNAPs_strand = np.full(p['RNAPS_NB'], NaN)
+    ts_beg = np.full(p['RNAPS_NB'], NaN)
+    ts_remain = np.full(p['RNAPS_NB'], NaN)
     # RNAPs_tr will contain the id of the picked transcript
-    RNAPs_tr = np.full(RNAPS_NB, -1, dtype=(int64))
+    RNAPs_tr = np.full(p['RNAPS_NB'], -1, dtype=(int64))
     # get the TSSs ids
     tss_id = tss.index.values
 
     # in the case of RNAP_NBR = 0
     RNAPs_hooked_id = []
 
-    for t in range(0,int(ITERATIONS_NB/DELTA_T)):
+    for t in range(0,int(p['ITERATIONS_NB']/p['DELTA_T'])):
         # we need to know each TSS belong to which Domaine
         TSS_pos_idx = np.searchsorted(Barr_pos, TSS_pos)
 
@@ -444,15 +449,15 @@ def start_transcribing(params, ind):
         sigma_tr_start = Barr_sigma[TSS_pos_idx-1]
 
         # get the initiation rates
-        init_rate = f_init_rate(tr_rate, sigma_tr_start, sigma_t, epsilon, m)
+        init_rate = f_init_rate(tr_rate, sigma_tr_start, p['sigma_t'], p['epsilon'], p['m'])
 
         sum_init_rate = np.sum(init_rate)
 
-        prob_init_rate = f_prob_init_rate(init_rate, sum_init_rate, DELTA_T)
+        prob_init_rate = f_prob_init_rate(init_rate, sum_init_rate, p['DELTA_T'])
 
         if np.size(RNAPs_unhooked_id)!=0:
             # get the unhooked rates
-            prob_unhooked_rate = f_prob_unhooked_rate(sum_init_rate, DELTA_T, len(RNAPs_unhooked_id))
+            prob_unhooked_rate = f_prob_unhooked_rate(sum_init_rate, p['DELTA_T'], len(RNAPs_unhooked_id))
             # craete the numpy array
             prob_unhooked_rate = np.full(len(RNAPs_unhooked_id), prob_unhooked_rate)
             all_prob = np.concatenate([prob_init_rate, prob_unhooked_rate])
@@ -666,11 +671,11 @@ def start_transcribing(params, ind):
     # dic_tr_nbr = dict([[i,v] for i,v in enumerate(tr_nbr)])
     # return(dic_tr_nbr)
 
-    return(tr_nbr)
+    return(tr_nbr/sum(tr_nbr))
 
 
 # This function for resuming the simulation by reading npz files
-def resume_transcription(INI_file, resume_path, output_dir):
+'''def resume_transcription(INI_file, resume_path, output_dir):
 
     ####################### Params info ###################
     config = read_config_file(INI_file)
