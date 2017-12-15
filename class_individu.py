@@ -64,7 +64,7 @@ class individu():
 			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
 			S2=np.copy(S)
 			S.reverse()
-			self.newgenes[S2]=self.genes[S]
+			self.newnoms_genes[S2]=self.noms_genes[S]
 			self.newstrands[S2]=-self.strands[S]
 
 	def indel(self) :
@@ -86,10 +86,10 @@ class individu():
 			self.newgenome-=1
 
 	def calcul_fitness(self,genes_level) :
-		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnom_genes)])/genes_level[np.argsort(self.newnom_genes)])
+		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)])/genes_level[np.argsort(self.newnoms_genes)])
 
 	def update_fitness(self,genes_level) :
-		self.new_fitness=calcul_fitness(genes_level)
+		self.new_fitness=self.calcul_fitness(genes_level)
 
 	def choice_indiv(self) :
 		# we want to minimize fitness with a probability to keep the wrong genome anyway

@@ -299,12 +299,12 @@ def simulation():
     k_TOPO = config.getfloat('SIMULATION', 'k_TOPO')
     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
 
-    nb_iter = config.getfloat('SIMULATION', 'nb_iter')
+    nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
     p_inv = config.getfloat('SIMULATION', 'p_inv')
     p_indel = config.getfloat('SIMULATION', 'p_indel')
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
-    
+
 
     # define the output directory
     os.makedirs(output_dir, exist_ok=True)
@@ -323,37 +323,37 @@ def simulation():
     'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
     'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
-    genes = np.zeros(10,dtype=int)
+
     #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
-    
+
     # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X,genes)
     genes_level=start_transcribing(params,ind)
-    #print(genes_level) 
+    #print(genes_level)
     ind.update_fitness(genes_level)
 
-    fitnesses=[]    
+    fitnesses=[]
 
     #faire calculs
     for i in range(0, nb_iter):
         test_modif=False
-       
+
         p=np.random.rand()
         if p<p_inv:
             ind.inversion()
             test_modif=True
-        
+
         p=np.random.rand()
         if p<p_indel:
-            ind.indel()  
-            test_modif=True 
-            
-        if test : # if no indel/inv, 
+            ind.indel()
+            test_modif=True
+
+        if test : # if no indel/inv,
             genes_level=start_transcribing(params,ind)
             ind.update_fitness(genes_level)
             ind.choice_indiv()
             fitnesses.append(ind.fitness)
-            
+
 
 
 
