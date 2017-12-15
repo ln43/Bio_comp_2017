@@ -1,5 +1,5 @@
 import os
-import class_individu
+from class_individu import individu
 import configparser
 import pandas as pd
 import numpy as np
@@ -7,7 +7,6 @@ import collections as col
 from pylab import *
 import errno
 import csv
-
 
 RNAPs_genSC = 0.1
 ###########################################################
@@ -268,6 +267,8 @@ def save_files(output_dir,
 ###########################################################
 
 def simulation():
+    INI_file="params.ini"
+    output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
 
     # get inputs infos from the config file
@@ -317,8 +318,10 @@ def simulation():
     'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
     'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
+    genes = np.zeros(10,dtype=int)
     #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
-    ind = individu(gff_df, tss, tts, prot, genome_size, params,DELTA_X)
+    ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X, genes)
+    print(start_transcribing(params,ind))
     #faire calculs
     for i in range(0, nb_iter):
         #faire des trucs
@@ -348,7 +351,7 @@ def start_transcribing(p, ind):
     RNAPs_last_pos = np.full(p['RNAPS_NB'], NaN) #np.zeros(RNAPS_NB, dtype=int)
 
     # Strands orientation
-    strands = str2num(gff_df['strand'].values)
+    strands = str2num(ind.gff_df['strand'].values)
 
     # list of all possible transcripts
     tr_id, tr_strand, tr_start, tr_end, tr_rate, tr_size, ts_beg_all_trs, ts_remain_all = get_tr_info(ind.tss, ind.tts, TU_tts, Kon, Poff)
@@ -376,7 +379,7 @@ def start_transcribing(p, ind):
     # The number of times transcripts has been transcribed
     tr_nbr = np.zeros(len(tr_id), dtype=int)
 
-    genome = int(ind.genome_size/DELTA_X)
+    genome = int(ind.genome_size/p['DELTA_X'])
 
     Barr_fix = (ind.prot['prot_pos'].values/p['DELTA_X']).astype(int)
 
@@ -436,14 +439,14 @@ def start_transcribing(p, ind):
     # RNAPs_tr will contain the id of the picked transcript
     RNAPs_tr = np.full(p['RNAPS_NB'], -1, dtype=(int64))
     # get the TSSs ids
-    tss_id = tss.index.values
+    tss_id = ind.tss.index.values
 
     # in the case of RNAP_NBR = 0
     RNAPs_hooked_id = []
 
     for t in range(0,int(p['ITERATIONS_NB']/p['DELTA_T'])):
         # we need to know each TSS belong to which Domaine
-        TSS_pos_idx = np.searchsorted(Barr_pos, TSS_pos)
+        TSS_pos_idx = np.searchsorted(Barr_pos, ind.TSS_pos)
 
         # after knowing the domaine of each TSS we can get sigma
         sigma_tr_start = Barr_sigma[TSS_pos_idx-1]
@@ -508,7 +511,7 @@ def start_transcribing(p, ind):
 
         # save the time when RNApoly FINISHS trasncribing a specific transcript
         for x in RNAPs_tr[np.where(ts_remain==0)] :
-            tr_times[x].append(t*DELTA_T) # + 0.5
+            tr_times[x].append(t*p['DELTA_T']) # + 0.5
 
         tr_nbr[RNAPs_tr[np.where(ts_remain==0)]]+=1
 
@@ -632,14 +635,15 @@ def start_transcribing(p, ind):
 
 
         # Now calc_sigma
-        Barr_sigma = calc_sigma(Barr_sigma, GYRASE_CONC, k_GYRASE, x0_GYRASE, GYRASE_CTE, TOPO_CONC, k_TOPO, x0_TOPO, TOPO_CTE, DELTA_T)
+        Barr_sigma = calc_sigma(Barr_sigma, p['GYRASE_CONC'], p['k_GYRASE'], p['x0_GYRASE'], \
+        p['GYRASE_CTE'], p['TOPO_CONC'], p['k_TOPO'], p['x0_TOPO'], p['TOPO_CTE'], p['DELTA_T'])
 
         mean_sig_wholeGenome = np.sum(Barr_sigma*Dom_size)/genome
 
         # Update the initiation rate
-        init_rate = f_init_rate(tr_rate, sigma_tr_start, sigma_t, epsilon, m)
+        init_rate = f_init_rate(tr_rate, sigma_tr_start, p['sigma_t'], p['epsilon'], p['m'])
 
-        if t%OUTPUT_STEP == 0:
+        if t%p['OUTPUT_STEP'] == 0:
             # save all informations to npz file
             # RNAPs_info
             save_RNAPs_info[:, 0, t] = RNAPs_tr
@@ -673,7 +677,7 @@ def start_transcribing(p, ind):
 
     return(tr_nbr/sum(tr_nbr))
 
-
+print(simulation())
 # This function for resuming the simulation by reading npz files
 '''def resume_transcription(INI_file, resume_path, output_dir):
 
