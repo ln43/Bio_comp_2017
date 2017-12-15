@@ -323,8 +323,17 @@ def simulation():
     'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
     'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
-
     #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
+
+    # Read Envir
+    f_env = open("environment.dat", "r")
+    env = f_env.readlines()
+    genes = np.zeros(10, dtype=float)
+    compteur = 0
+    for line in env:
+        genes[compteur] = line.split()[1]
+        compteur += 1
+
 
     # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X,genes)
@@ -332,13 +341,7 @@ def simulation():
     #print(genes_level)
     ind.fitness=ind.calcul_fitness(genes_level)
 
-	f_env = open("environnement.dat", "r")
-	env = f_env.readlines()
-	genes = np.zeros(10, dtype=float)
-	compteur = 0
-	for line in env:
-		genes[compteur] = line.split(" ")[1]
-		compteur += 1
+
     fitnesses=[]
 
     #faire calculs
@@ -357,11 +360,16 @@ def simulation():
 
         if test : # if no indel/inv,
             genes_level=start_transcribing(params,ind)
-            ind.update_fitness(genes_level)
+            ind.new_fitness=ind.calcul_fitness(genes_level)
             ind.choice_indiv()
             fitnesses.append(ind.fitness)
+<<<<<<< HEAD
 
 
+=======
+
+    return(fitnesses)
+>>>>>>> e1efa5473e58ba4237f625e366e3f97adabdc8b8
 
 
 def start_transcribing(p, ind):
