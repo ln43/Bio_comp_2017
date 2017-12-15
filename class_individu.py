@@ -1,5 +1,5 @@
 class individu():
-	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, p_keep, genes):
+	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, genes):
 		self.tts = tts
 		self.tss = tss
 		self.gff_df=gff_df

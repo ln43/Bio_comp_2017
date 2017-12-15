@@ -216,7 +216,7 @@ def calc_sigma(Barr_sigma, GYRASE_CONC, k_GYRASE, x0_GYRASE, GYRASE_CTE, TOPO_CO
 
     return Barr_sigma
 
-###################### Saving files #######################
+''' ###################### Saving files #######################
 
 def save_files(output_dir,
                 Barr_pos, Barr_type, Dom_size, Barr_ts_remain, Barr_sigma,
@@ -261,7 +261,7 @@ def save_files(output_dir,
     # Save all info
     np.savez("%s/all_res/save_RNAPs_info" %output_dir, RNAPs_info = save_RNAPs_info)
     np.savez("%s/all_res/save_tr_info" %output_dir, tr_info = save_tr_info)
-    np.savez("%s/all_res/save_sigma_info" %output_dir, Barr_sigma_info = save_Barr_sigma, Dom_size_info = save_Dom_size, mean_sig_wholeGenome = save_mean_sig_wholeGenome)
+    np.savez("%s/all_res/save_sigma_info" %output_dir, Barr_sigma_info = save_Barr_sigma, Dom_size_info = save_Dom_size, mean_sig_wholeGenome = save_mean_sig_wholeGenome) '''
 
 ###########################################################
 #         Transcription Process (Simulation)              #
@@ -299,6 +299,11 @@ def simulation():
     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
+    
+    ##### /!\ A changer et a extraire de param ini ensuite ! /!\  #####
+    p_inv=0.5
+    p_indel=0.5 
+    nb_iter=10000
 
     # define the output directory
     os.makedirs(output_dir, exist_ok=True)
@@ -318,10 +323,34 @@ def simulation():
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
     'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
     #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
+    
+    # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, params,DELTA_X)
+    genes_level=start_transcribing(params,ind)
+    ind.update_fitness(genes_level)
+    
+    
+    fitnesses=[]
     #faire calculs
     for i in range(0, nb_iter):
-        #faire des trucs
+        test_modif=False
+       
+        p=np.random.rand()
+        if p<p_inv:
+            ind.inversion()
+            test_modif=True
+        
+        p=np.random.rand()
+        if p<p_indel:
+            ind.indel()  
+            test_modif=True 
+            
+        if test : # if no indel/inv, 
+            genes_level=start_transcribing(params,ind)
+            ind.update_fitness(genes_level)
+            ind.choice_indiv()
+            fitnesses.append(ind.fitness)
+            
 
 
 
