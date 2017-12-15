@@ -305,10 +305,6 @@ def simulation():
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
     
-    ##### /!\ A changer et a extraire de param ini ensuite ! /!\  #####
-    p_inv=0.5
-    p_indel=0.5 
-    nb_iter=10000
 
     # define the output directory
     os.makedirs(output_dir, exist_ok=True)
