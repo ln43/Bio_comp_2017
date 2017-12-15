@@ -7,6 +7,7 @@ import collections as col
 from pylab import *
 import errno
 import csv
+import matplotlib.pyplot as plt
 
 RNAPs_genSC = 0.1
 ###########################################################
@@ -342,34 +343,47 @@ def simulation():
     ind.fitness=ind.calcul_fitness(genes_level)
 
 
-    fitnesses=[]
+    fitnesses=[ind.fitness]
 
     #faire calculs
+    events = [0]
     for i in range(0, nb_iter):
-        test_modif=False
-
+        print(i)
+        # test_modif=False
+        inversion=False
+        insertion=False
+        deletion=False
         p=np.random.rand()
         if p<p_inv:
             ind.inversion()
-            test_modif=True
+            # test_modif=True
+            inversion=True
 
         p=np.random.rand()
         if p<p_indel:
-            ind.indel()
-            test_modif=True
+            ev = ind.indel()
+            if ev==1:
+                insertion=True
+            else:
+                deletion=True
+            # test_modif=True
+        if not (inversion and insertion and deletion): events.append(0)
+        elif inversion and insertion: events.append(1)
+        elif inversion and deletion: events.append(2)
+        elif not (inversion) and insertion: events.append(3)
+        elif not (inversion) and deletion: events.append(4)
+        # if test : # if no indel/inv,
+        genes_level=start_transcribing(params,ind)
+        ind.new_fitness=ind.calcul_fitness(genes_level)
+        ind.choice_indiv()
+        fitnesses.append(ind.fitness)
 
-        if test : # if no indel/inv,
-            genes_level=start_transcribing(params,ind)
-            ind.new_fitness=ind.calcul_fitness(genes_level)
-            ind.choice_indiv()
-            fitnesses.append(ind.fitness)
-<<<<<<< HEAD
+    print(fitnesses, events)
+    colormap = np.array(['grey','r','g', 'b', 'brown'])
+    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=100, c=colormap[events])
+    plt.show()
+    return(fitnesses, events)
 
-
-=======
-
-    return(fitnesses)
->>>>>>> e1efa5473e58ba4237f625e366e3f97adabdc8b8
 
 
 def start_transcribing(p, ind):

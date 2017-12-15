@@ -62,10 +62,13 @@ class individu():
 
 		else: # Invert intern part
 			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
-			S2=np.copy(S)
-			S.reverse()
-			self.newnoms_genes[S2]=self.noms_genes[S]
-			self.newstrands[S2]=-self.strands[S]
+			if len(S)!=0:
+				S2=np.copy(S)
+				S.reverse()
+				# print(inv1,inv2)
+				# print(S, S2)
+				self.newnoms_genes[S2]=self.noms_genes[S]
+				self.newstrands[S2]=-self.strands[S]
 
 	def indel(self) :
 		ind=np.random.randint(0,self.genome)
@@ -73,17 +76,19 @@ class individu():
 			ind=np.random.randint(0,self.genome)
 		prob=np.random.rand(1)
 		if prob<0.5 : # Insertion
-			print("Insert")
+			# print("Insert")
 			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]+=1
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]+=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]+=1
 			self.newgenome+=1
+			return(1)
 		else : # Deletion
-			print("Deletion")
+			# print("Deletion")
 			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]-=1
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]-=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
 			self.newgenome-=1
+			return(0)
 
 	def calcul_fitness(self,genes_level) :
 		return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))/genes_level[np.argsort(self.newnoms_genes)]))
