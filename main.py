@@ -367,22 +367,24 @@ def simulation():
             else:
                 deletion=True
             # test_modif=True
-        if not (inversion and insertion and deletion): events.append(0)
+        # print(inversion, insertion, deletion)
+        if not inversion and not insertion and not deletion: events.append(0)
         elif inversion and insertion: events.append(1)
         elif inversion and deletion: events.append(2)
-        elif not (inversion) and insertion: events.append(3)
-        elif not (inversion) and deletion: events.append(4)
+        elif not inversion and insertion: events.append(3)
+        elif not inversion and deletion: events.append(4)
         # if test : # if no indel/inv,
         genes_level=start_transcribing(params,ind)
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
 
-    print(fitnesses, events)
     colormap = np.array(['grey','r','g', 'b', 'brown'])
-    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=100, c=colormap[events])
+    labels = np.array(['No event', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
+    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=50, c=colormap[events], label=labels[events])
+    # plt.legend()
     plt.show()
-    return(fitnesses, events)
+    return(fitnesses)
 
 
 
