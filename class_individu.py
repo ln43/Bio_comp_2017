@@ -22,8 +22,8 @@ class individu():
 		self.newstrands = np.copy(strands)
 		self.noms_genes = range(1, len(genes) + 1)
 		self.newnoms_genes = np.copy(self.noms_genes)
-		self.genes = genes
-		self.fitness = self.calcul_fitness(genes)
+		self.genes_level = genes
+		self.fitness = self.calcul_fitness()
 		self.new_fitness = 0
 
 	def str2num(self, s):
@@ -82,3 +82,6 @@ class individu():
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]-=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
 			self.newgenome-=1
+
+	def calcul_fitness(self) :
+		
