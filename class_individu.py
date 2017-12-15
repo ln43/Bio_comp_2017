@@ -86,10 +86,10 @@ class individu():
 			self.newgenome-=1
 
 	def calcul_fitness(self,genes_level) :
-		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnom_genes)])/genes_level[np.argsort(self.newnom_genes)])
+		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)])/genes_level[np.argsort(self.newnoms_genes)])
 
 	def update_fitness(self,genes_level) :
-		self.new_fitness=calcul_fitness(genes_level)
+		self.new_fitness=self.calcul_fitness(genes_level)
 
 	def choice_indiv(self) :
 		# we want to minimize fitness with a probability to keep the wrong genome anyway

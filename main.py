@@ -299,7 +299,7 @@ def simulation():
     k_TOPO = config.getfloat('SIMULATION', 'k_TOPO')
     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
 
-    nb_iter = config.getfloat('SIMULATION', 'nb_iter')
+    nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
     p_inv = config.getfloat('SIMULATION', 'p_inv')
     p_indel = config.getfloat('SIMULATION', 'p_indel')
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
@@ -330,7 +330,7 @@ def simulation():
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X,genes)
     genes_level=start_transcribing(params,ind)
     #print(genes_level) 
-    ind.update_fitness(genes_level)
+    ind.fitness=ind.calcul_fitness(genes_level)
 
     fitnesses=[]    
 
