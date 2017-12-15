@@ -64,7 +64,7 @@ class individu():
 			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
 			S2=np.copy(S)
 			S.reverse()
-			self.newgenes[S2]=self.genes[S]
+			self.newnoms_genes[S2]=self.noms_genes[S]
 			self.newstrands[S2]=-self.strands[S]
 
 	def indel(self) :
@@ -73,20 +73,20 @@ class individu():
 			ind=np.random.randint(0,self.genome)
 		prob=np.random.rand(1)
 		if prob<0.5 : # Insertion
-			print("insert")
+			print("Insert")
 			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]+=1
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]+=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]+=1
 			self.newgenome+=1
 		else : # Deletion
-			print("deletion")
+			print("Deletion")
 			self.newTSS_pos[np.where(ind<self.TSS_pos)[0]]-=1
 			self.newTTS_pos[np.where(ind<self.TTS_pos)[0]]-=1
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
 			self.newgenome-=1
 
 	def calcul_fitness(self,genes_level) :
-		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)])/genes_level[np.argsort(self.newnoms_genes)])
+		return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))/genes_level[np.argsort(self.newnoms_genes)]))
 
 	def update_fitness(self,genes_level) :
 		self.new_fitness=self.calcul_fitness(genes_level)
@@ -99,7 +99,7 @@ class individu():
 		p=np.random.rand()
 		if p>ratio: # keep the old genome
 			self.newTTS_pos = np.copy(self.TTS_pos)
-			self.newgenome = genome
+			self.newgenome = self.genome
 			self.newTSS_pos = np.copy(self.TTS_pos)
 			self.newBarr_fix = np.copy(self.Barr_fix)
 			self.newstrands = np.copy(self.strands)
@@ -107,7 +107,7 @@ class individu():
 			self.new_fitness = self.fitness
 		else: # keep the new genome, even if it doesn't improve the fitness
 			self.TTS_pos = np.copy(self.newTTS_pos)
-			self.genome = newgenome
+			self.genome = self.newgenome
 			self.TSS_pos = np.copy(self.newTTS_pos)
 			self.Barr_fix = np.copy(self.newBarr_fix)
 			self.strands = np.copy(self.newstrands)
