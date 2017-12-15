@@ -21,8 +21,8 @@ class individu():
 		self.strands = self.str2num(gff_df['strand'].values)
 		self.newstrands = np.copy(strands)
 		self.noms_genes = range(1, len(genes) + 1)
+		self.newnoms_genes = np.copy(self.noms_genes)
 		self.genes = genes
-		self.newgenes = np.copy(self.genes)
 		self.fitness = self.calcul_fitness(genes)
 		self.new_fitness = 0
 
@@ -50,9 +50,9 @@ class individu():
 			newS1.reverse()
 			newS2.reverse()
 			
-			self.newgenes=np.copy(self.genes)
-			self.newgenes[S1]=self.genes[newS1]
-			self.newgenes[S2]=self.genes[newS2]
+			self.newnoms_genes=np.copy(self.noms_genes)
+			self.newnoms_genes[S1]=self.noms_genes[newS1]
+			self.newnoms_genes[S2]=self.noms_genes[newS2]
 			
 			self.newstrands=np.copy(self.strands)
 			self.newstrands[S1]=-self.strands[newS1]
