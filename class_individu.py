@@ -1,5 +1,5 @@
 class individu():
-	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, genes):
+	def __init__(self, gff_df, tss, tts, prot, genome_size, DELTA_X, p_keep, genes):
 		self.tts = tts
 		self.tss = tss
 		self.gff_df=gff_df
@@ -20,10 +20,10 @@ class individu():
 
 		self.strands = self.str2num(gff_df['strand'].values)
 		self.newstrands = np.copy(strands)
-		self.noms_genes = range(1, len(genes) + 1)
+		self.noms_genes = np.arange(1, len(genes) + 1)
 		self.newnoms_genes = np.copy(self.noms_genes)
-		self.genes_level = genes
-		self.fitness = self.calcul_fitness()
+		self.genes_level_envir = genes
+		self.fitness = 0
 		self.new_fitness = 0
 
 	def str2num(self, s):
@@ -83,5 +83,32 @@ class individu():
 			self.newBarr_fix[np.where(ind<self.Barr_fix)[0]]-=1
 			self.newgenome-=1
 
-	def calcul_fitness(self) :
+	def calcul_fitness(self,genes_level) :
+		self.fitness=sum((self.genes_level_envir-genes_level[np.argsort(self.newnom_genes)])/genes_level[np.argsort(self.newnom_genes)])
+		
+	def update_fitness(self,genes_level) :
+		self.new_fitness=calcul_fitness(genes_level)
+		
+	def choice_indiv(self) :
+		# we want to minimize fitness with a probability to keep the wrong genome anyway
+		ratio=self.fitness/self.new_fitness
+		if ratio>1 :
+			ratio=1
+		p=np.random.rand()
+		if p>ratio: # keep the old genome
+			self.newTTS_pos = np.copy(self.TTS_pos)
+			self.newgenome = genome
+			self.newTSS_pos = np.copy(self.TTS_pos)
+			self.newBarr_fix = np.copy(self.Barr_fix)
+			self.newstrands = np.copy(self.strands)
+			self.newnoms_genes = np.copy(self.noms_genes)
+			self.new_fitness = self.fitness
+		else: # keep the new genome, even if it doesn't improve the fitness
+			self.TTS_pos = np.copy(self.newTTS_pos)
+			self.genome = newgenome
+			self.TSS_pos = np.copy(self.newTTS_pos)
+			self.Barr_fix = np.copy(self.newBarr_fix)
+			self.strands = np.copy(self.newstrands)
+			self.noms_genes = np.copy(self.newnoms_genes)
+			self.fitness = self.new_fitness
 		
