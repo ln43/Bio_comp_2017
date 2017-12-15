@@ -330,8 +330,15 @@ def simulation():
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X,genes)
     genes_level=start_transcribing(params,ind)
     #print(genes_level)
-    ind.update_fitness(genes_level)
+    ind.fitness=ind.calcul_fitness(genes_level)
 
+	f_env = open("environnement.dat", "r")
+	env = f_env.readlines()
+	genes = np.zeros(10, dtype=float)
+	compteur = 0
+	for line in env:
+		genes[compteur] = line.split(" ")[1]
+		compteur += 1
     fitnesses=[]
 
     #faire calculs
