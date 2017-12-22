@@ -59,6 +59,21 @@ class individu():
 			self.newstrands=np.copy(self.strands)
 			self.newstrands[S1]=-self.strands[newS1]
 			self.newstrands[S2]=-self.strands[newS2]
+			
+			ecart2=inv1+inv2-self.TTS_pos[S1[len(S1)-1]]-self.TSS_pos[S2[0]]
+			self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
+			self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
+			self.newBarr_fix[S2]=self.Barr_fix[S2] + ecart2
+
+			ecart1=self.TTS_pos[S1[len(S1)-1]]-(inv1+inv2-self.TSS_pos[S2[0]])
+			self.newTSS_pos[S1]=self.TSS_pos[S1] - ecart1
+			self.newTTS_pos[S1]=self.TTS_pos[S1] - ecart1
+			self.newBarr_fix[S1]=self.Barr_fix[S1] - ecart1
+			
+			if self.newBarr_fix[0]<0: # translation if one region is split between end and beginning
+				self.newBarr_fix=self.newBarr_fix-self.newBarr_fix[0]
+				self.newTSS_pos=self.newTSS_pos-self.newBarr_fix[0]
+				self.newTTS_pos=self.newTTS_pos-self.newBarr_fix[0]
 
 		else: # Invert intern part
 			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
@@ -69,6 +84,11 @@ class individu():
 				# print(S, S2)
 				self.newnoms_genes[S2]=self.noms_genes[S]
 				self.newstrands[S2]=-self.strands[S]
+				
+				ecart=inv1+(inv2-self.TTS_pos[S2[len(S2)-1]])-self.TSS_pos[S2[0]]
+				self.newTSS_pos[S2] = self.TSS_pos[S2]+ecart
+				self.newTTS_pos[S2] = self.TTS_pos[S2]+ecart
+				self.newBarr_fix[S2] = self.newBarr_fix[S2]+ecart
 
 	def indel(self) :
 		ind=np.random.randint(0,self.genome)
