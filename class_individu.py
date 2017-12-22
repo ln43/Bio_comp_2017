@@ -92,6 +92,8 @@ class individu():
 
 	def calcul_fitness(self,genes_level) :
 		return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))/genes_level[np.argsort(self.newnoms_genes)]))
+		# return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))))
+		# return (sum(((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))**2/genes_level[np.argsort(self.newnoms_genes)]))
 
 	def update_fitness(self,genes_level) :
 		self.new_fitness=self.calcul_fitness(genes_level)
