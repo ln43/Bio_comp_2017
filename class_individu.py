@@ -80,7 +80,7 @@ class individu():
 							self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
 							self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
 							
-			self.translation=int((self.genome+self.newTSS_pos[0]-self.newTTS_pos[-1])/2) - self.newTSS_pos[0]
+			translation=int((self.genome+self.newTSS_pos[0]-self.newTTS_pos[-1])/2) - self.newTSS_pos[0]
 			self.newTSS_pos=self.newTSS_pos+translation
 			self.newTTS_pos=self.newTTS_pos+translation
 			self.newBarr_fix[0]=0
@@ -136,7 +136,8 @@ class individu():
 		if ratio>1 :
 			ratio=1
 		p=np.random.rand()
-		if p>ratio: # keep the old genome
+		#if p>ratio
+		if self.fitness>self.new_fitness: # keep the old genome
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome
 			self.newTSS_pos = np.copy(self.TTS_pos)
