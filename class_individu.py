@@ -104,25 +104,6 @@ class individu():
 				
 				
 
-
-    
-else:
-    S=list(set(np.ndarray.tolist(np.where(inv1<TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>TTS_pos)[0])))
-    if len(S)>0 :
-        S2=np.copy(S)
-        S.reverse()
-        newnoms_genes[S2]=noms_genes[S]
-        newstrands[S2]=-strands[S]
-    
-        ecart=inv1+(inv2-TTS_pos[S2[-1]])-TSS_pos[S2[0]]
-        newTSS_pos[S2] = TSS_pos[S2]+ecart
-        newTTS_pos[S2] = TTS_pos[S2]+ecart
-		
-				
-				
-				
-				
-
 	def indel(self) :
 		ind=np.random.randint(0,self.genome)
 		while set(np.ndarray.tolist(np.where(ind>self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(ind<self.TTS_pos)[0])): # test if ind belongs to non-coding part
