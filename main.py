@@ -262,10 +262,10 @@ def save_files(output_dir,
     np.savez("%s/all_res/save_RNAPs_info" %output_dir, RNAPs_info = save_RNAPs_info)
     np.savez("%s/all_res/save_tr_info" %output_dir, tr_info = save_tr_info)
     np.savez("%s/all_res/save_sigma_info" %output_dir, Barr_sigma_info = save_Barr_sigma, Dom_size_info = save_Dom_size, mean_sig_wholeGenome = save_mean_sig_wholeGenome) '''
-    
-    
+
+
 def plotGenome(ind,title):
-    fig = plt.figure()  
+    fig = plt.figure()
     ax=plt.axes()
 
     pB= ax.scatter(ind.Barr_fix, np.ones(10), s=20, c='r',label="Barrieres")
@@ -276,7 +276,7 @@ def plotGenome(ind,title):
         if ind.strands[i]>0 :
             ax.arrow(ind.TSS_pos[i]+2.5, 1, ind.TTS_pos[i]-ind.TSS_pos[i]-5.5, 0, head_width=0.01, head_length=1, fc='k', ec='k')
         else :
-            ax.arrow(ind.TTS_pos[i]-2.5, 1, -(ind.TTS_pos[i]-ind.TSS_pos[i]-5.5), 0, head_width=0.01, head_length=1, fc='k', ec='k')   
+            ax.arrow(ind.TTS_pos[i]-2.5, 1, -(ind.TTS_pos[i]-ind.TSS_pos[i]-5.5), 0, head_width=0.01, head_length=1, fc='k', ec='k')
     plt.legend(handles=[pB,pTSS,pTTS])
     plt.ylim([0.5,1.5])
     for i, txt in enumerate(ind.noms_genes) :
@@ -365,7 +365,7 @@ def simulation():
     genes_level=start_transcribing(params,ind)
     #print(genes_level)
     ind.fitness=ind.calcul_fitness(genes_level)
-    
+
     plotGenome(ind,'Initial')
 
     fitnesses=[ind.fitness]
@@ -400,27 +400,27 @@ def simulation():
         elif not inversion and deletion: events.append(4)
         else: events.append(5)
         # if test : # if no indel/inv,
-        
+
         genes_lev=[]
         for i in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level=np.mean(genes_lev,axis=0)
-        
+
         #genes_level=start_transcribing(params,ind)
-        
+
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
-        
-        #if i%200==0:
-        if True :
+
+        if i%200==0:
+        # if True :
             colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
             labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
             plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events])
             plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
             #plt.legend(labels[events])
             plt.show()
-        
+
     plotGenome(ind,'Final')
 
     return(fitnesses)
