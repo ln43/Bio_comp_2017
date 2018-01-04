@@ -15,7 +15,7 @@ class individu():
 		self.newgenome = self.genome
 
 		self.TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
-		self.newTSS_pos = np.copy(self.TTS_pos)
+		self.newTSS_pos = np.copy(self.TSS_pos)
 
 		self.Barr_fix = (prot['prot_pos'].values/DELTA_X).astype(int)
 		self.newBarr_fix = np.copy(self.Barr_fix)
@@ -68,25 +68,23 @@ class individu():
 					self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
 					self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
 
-					ecart1=self.TTS_pos[S1[-1]]-(inv1+inv2-self.TSS_pos[S2[0]])
-					self.newTSS_pos[S1]=self.TSS_pos[S1] - ecart1
-					self.newTTS_pos[S1]=self.TTS_pos[S1] - ecart1
+					self.newTSS_pos[S1]=self.TSS_pos[S1] + ecart2
+					self.newTTS_pos[S1]=self.TTS_pos[S1] + ecart2
 				else :
 					if len(S1)>0:
 						ecart1=self.TTS_pos[S1[-1]]-(inv2-(self.genome-inv1+self.TSS_pos[0]))
 						self.newTSS_pos[S1]=self.TSS_pos[S1]-ecart1
 						self.newTTS_pos[S1]=self.TTS_pos[S1]-ecart1
-					else :
-						if len(S2)>0:
-							ecart2=inv1+inv2+self.genome-self.TTS_pos[S2[-1]]-self.TSS_pos[S2[0]]
-							self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
-							self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
+					elif len(S2)>0:
+						ecart2=inv1+inv2+self.genome-self.TTS_pos[S2[-1]]-self.TSS_pos[S2[0]]
+						self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
+						self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
 
-			translation=int((self.genome+self.newTSS_pos[0]-self.newTTS_pos[-1])/2) - self.newTSS_pos[0]
-			self.newTSS_pos=self.newTSS_pos+translation
-			self.newTTS_pos=self.newTTS_pos+translation
-			self.newBarr_fix[0]=0
-			self.newBarr_fix[1:]=self.newTTS_pos[0:-1]+(self.newTSS_pos[1:]-self.newTTS_pos[0:-1])/2+1
+				translation=int((self.genome+self.newTSS_pos[0]-self.newTTS_pos[-1])/2) - self.newTSS_pos[0]
+				self.newTSS_pos=self.newTSS_pos+translation
+				self.newTTS_pos=self.newTTS_pos+translation
+				self.newBarr_fix[0]=0
+				self.newBarr_fix[1:]=self.newTTS_pos[0:-1]+(self.newTSS_pos[1:]-self.newTTS_pos[0:-1])/2+1
 
 
 		else: # Invert intern part
