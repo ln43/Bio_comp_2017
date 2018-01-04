@@ -27,7 +27,7 @@ class individu():
 		self.genes_level_envir = genes
 		self.fitness = 0
 		self.new_fitness = 0
-		
+
 		self.pkeep=p_keep
 
 	def str2num(self, s):
@@ -48,30 +48,30 @@ class individu():
 			S1=np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])
 			S2=np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])
 			S=S2+S1
-			
+
 			if len(S1)>0 or len(S2)>0 :
 				newS1=S[0:len(S1)]
 				newS2=S[len(S1):]
 				newS1.reverse()
 				newS2.reverse()
-	
+
 				self.newnoms_genes=np.copy(self.noms_genes)
 				self.newnoms_genes[S1]=self.noms_genes[newS1]
 				self.newnoms_genes[S2]=self.noms_genes[newS2]
-	
+
 				self.newstrands=np.copy(self.strands)
 				self.newstrands[S1]=-self.strands[newS1]
 				self.newstrands[S2]=-self.strands[newS2]
-				
+
 				if len(S1)>0 and len(S2)>0 :
 					ecart2=inv1+inv2-self.TTS_pos[S1[-1]]-self.TSS_pos[S2[0]]
 					self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
 					self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
-					
+
 					ecart1=self.TTS_pos[S1[-1]]-(inv1+inv2-self.TSS_pos[S2[0]])
 					self.newTSS_pos[S1]=self.TSS_pos[S1] - ecart1
 					self.newTTS_pos[S1]=self.TTS_pos[S1] - ecart1
-				else : 
+				else :
 					if len(S1)>0:
 						ecart1=self.TTS_pos[S1[-1]]-(inv2-(self.genome-inv1+self.TSS_pos[0]))
 						self.newTSS_pos[S1]=self.TSS_pos[S1]-ecart1
@@ -81,13 +81,13 @@ class individu():
 							ecart2=inv1+inv2+self.genome-self.TTS_pos[S2[-1]]-self.TSS_pos[S2[0]]
 							self.newTTS_pos[S2]=self.TTS_pos[S2] + ecart2
 							self.newTSS_pos[S2]=self.TSS_pos[S2] + ecart2
-							
+
 			translation=int((self.genome+self.newTSS_pos[0]-self.newTTS_pos[-1])/2) - self.newTSS_pos[0]
 			self.newTSS_pos=self.newTSS_pos+translation
 			self.newTTS_pos=self.newTTS_pos+translation
 			self.newBarr_fix[0]=0
 			self.newBarr_fix[1:]=self.newTTS_pos[0:-1]+(self.newTSS_pos[1:]-self.newTTS_pos[0:-1])/2+1
-				
+
 
 		else: # Invert intern part
 			S=list(set(np.ndarray.tolist(np.where(inv1<self.TSS_pos)[0])).intersection(np.ndarray.tolist(np.where(inv2>self.TTS_pos)[0])))
@@ -97,14 +97,14 @@ class individu():
 
 				self.newnoms_genes[S2]=self.noms_genes[S]
 				self.newstrands[S2]=-self.strands[S]
-				
+
 				ecart=inv1+(inv2-self.TTS_pos[S2[-1]])-self.TSS_pos[S2[0]]
 				self.newTSS_pos[S2] = self.TSS_pos[S2]+ecart
 				self.newTTS_pos[S2] = self.TTS_pos[S2]+ecart
 				self.newBarr_fix[0]=0
-				self.newBarr_fix[1:]=self.newTTS_pos[0:-1]+(self.newTSS_pos[1:]-self.newTTS_pos[0:-1])/2+1	
-				
-				
+				self.newBarr_fix[1:]=self.newTTS_pos[0:-1]+(self.newTSS_pos[1:]-self.newTTS_pos[0:-1])/2+1
+
+
 
 	def indel(self) :
 		ind=np.random.randint(0,self.genome)
@@ -128,13 +128,15 @@ class individu():
 
 	def calcul_fitness(self,genes_level) :
 		return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))/genes_level[np.argsort(self.newnoms_genes)]))
+		# return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))))
+		# return (sum(((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))**2/genes_level[np.argsort(self.newnoms_genes)]))
 
 	def update_fitness(self,genes_level) :
 		self.new_fitness=self.calcul_fitness(genes_level)
 
 	def choice_indiv(self) :
 		# we want to minimize fitness with a probability to keep the wrong genome anyway
-		
+
 		# ratio=self.fitness/self.new_fitness
 		# if ratio>1 :
 		# 	ratio=1

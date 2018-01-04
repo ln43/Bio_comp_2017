@@ -47,25 +47,25 @@ def read_config_file(path):
 #     # to preserve capital letters
 #     config.optionxform = str
 #     config.read(path)
-# 
+#
 #     # get inputs infos from the config file
 #     GFF_file = config.get('INPUTS', 'GFF')
 #     TSS_file = config.get('INPUTS', 'TSS')
 #     TTS_file = config.get('INPUTS', 'TTS')
 #     Prot_file = config.get('INPUTS', 'BARR_FIX')
-# 
+#
 #     # get values from the config file
 #     m = config.getfloat('GLOBAL', 'm')
 #     sigma_t = config.getfloat('GLOBAL', 'sigma_t')
 #     epsilon = config.getfloat('GLOBAL', 'epsilon')
-# 
+#
 #     SIGMA_0 = config.getfloat('SIMULATION', 'SIGMA_0')
 #     DELTA_X = config.getfloat('SIMULATION', 'DELTA_X')
 #     DELTA_T = config.getfloat('SIMULATION', 'DELTA_T')
 #     RNAPS_NB = config.getint('SIMULATION', 'RNAPS_NB')
 #     ITERATIONS_NB = config.getfloat('SIMULATION', 'ITERATIONS_NB')
 #     OUTPUT_STEP = config.getfloat('SIMULATION', 'OUTPUT_STEP')
-# 
+#
 #     GYRASE_CONC = config.getfloat('SIMULATION', 'GYRASE_CONC')
 #     TOPO_CONC = config.getfloat('SIMULATION', 'TOPO_CONC')
 #     TOPO_CTE = config.getfloat('SIMULATION', 'TOPO_CTE')
@@ -77,7 +77,7 @@ def read_config_file(path):
 #     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
 #     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
 #     #$print("SIGMA_0 --> ", SIGMA_0)
-# 
+#
 #     return GFF_file, TSS_file, TTS_file, Prot_file, m, sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO
 
 
@@ -399,7 +399,6 @@ def simulation():
         elif not inversion and insertion: events.append(3)
         elif not inversion and deletion: events.append(4)
         else: events.append(5)
-    
         # if test : # if no indel/inv,
         
         genes_lev=[]
@@ -408,19 +407,22 @@ def simulation():
         genes_level=np.mean(genes_lev,axis=0)
         
         #genes_level=start_transcribing(params,ind)
+        
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
-
-    colormap = np.array(['grey','r','g', 'b', 'brown','m'])
-    labels = np.array(['No event', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion','Inversion'])
-    plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=50, c=colormap[events])
-    plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
-    #plt.legend(labels[events])
-    plt.show()
-    
+        
+        #if i%200==0:
+        if True :
+            colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
+            labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
+            plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events])
+            plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
+            #plt.legend(labels[events])
+            plt.show()
+        
     plotGenome(ind,'Final')
-    
+
     return(fitnesses)
 
 
