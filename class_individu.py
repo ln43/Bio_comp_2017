@@ -139,7 +139,11 @@ class individu():
 		# if ratio>1 :
 		# 	ratio=1
 		if self.fitness<self.new_fitness :
-			p=np.random.rand()
+			if self.new_fitness-self.fitness<0.3 :
+				p=0
+			else :
+				p=1
+			#p=np.random.rand()
 		else : 
 			p=0
 		#print(self.fitness,self.new_fitness,p)
@@ -149,7 +153,7 @@ class individu():
 			#print("Keep old")
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome
-			self.newTSS_pos = np.copy(self.TTS_pos)
+			self.newTSS_pos = np.copy(self.TSS_pos)
 			self.newBarr_fix = np.copy(self.Barr_fix)
 			self.newstrands = np.copy(self.strands)
 			self.newnoms_genes = np.copy(self.noms_genes)
@@ -158,7 +162,7 @@ class individu():
 			#print("Keep new")
 			self.TTS_pos = np.copy(self.newTTS_pos)
 			self.genome = self.newgenome
-			self.TSS_pos = np.copy(self.newTTS_pos)
+			self.TSS_pos = np.copy(self.newTSS_pos)
 			self.Barr_fix = np.copy(self.newBarr_fix)
 			self.strands = np.copy(self.newstrands)
 			self.noms_genes = np.copy(self.newnoms_genes)
