@@ -413,15 +413,24 @@ def simulation():
         fitnesses.append(ind.fitness)
         
         #if i%200==0:
-        if True :
-            colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
-            labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
-            plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events])
-            plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
-            #plt.legend(labels[events])
-            plt.show()
+        # if True :
+        #     colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
+        #     labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
+        #     plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events])
+        #     plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
+        #     #plt.legend(labels[events])
+        #     plt.show()
         
     plotGenome(ind,'Final')
+    
+    fig = plt.figure()  
+    ax=plt.axes()
+    colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
+    labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
+    ax.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events],label=labels[events])
+    ax.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
+    #plt.legend(handles=[pS])
+    plt.show()
 
     return(fitnesses)
 
