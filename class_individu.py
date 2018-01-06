@@ -139,7 +139,7 @@ class individu():
 		# if ratio>1 :
 		# 	ratio=1
 		if self.fitness<self.new_fitness :
-			if self.new_fitness-self.fitness<0.3 :
+			if self.new_fitness-self.fitness<0.15 :
 				p=0
 			else :
 				p=1
