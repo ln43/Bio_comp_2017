@@ -402,7 +402,7 @@ def simulation():
         # if test : # if no indel/inv,
 
         genes_lev=[]
-        for i in range(0,5) :
+        for j in range(0,1) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level=np.mean(genes_lev,axis=0)
 
@@ -412,7 +412,7 @@ def simulation():
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
 
-        if i%200==0:
+        if i%100==0:
         # if True :
             colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
             labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
