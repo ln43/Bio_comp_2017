@@ -323,10 +323,10 @@ def simulation():
     k_TOPO = config.getfloat('SIMULATION', 'k_TOPO')
     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
 
-    nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
     p_inv = config.getfloat('SIMULATION', 'p_inv')
     p_indel = config.getfloat('SIMULATION', 'p_indel')
     p_keep  = config.getfloat('SIMULATION', 'p_keep')
+    nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
 
@@ -361,14 +361,14 @@ def simulation():
 
 
     # Create individu
-    ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X,genes,p_keep)
-    genes_level=start_transcribing(params,ind)
+    ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X, genes, p_keep)
+    genes_level = start_transcribing(params,ind)
     #print(genes_level)
-    ind.fitness=ind.calcul_fitness(genes_level)
+    ind.fitness = ind.calcul_fitness(genes_level)
 
     plotGenome(ind,'Initial')
 
-    fitnesses=[ind.fitness]
+    fitnesses = [ind.fitness]
 
     #faire calculs
     events = [0]
@@ -394,24 +394,24 @@ def simulation():
             # test_modif=True
         # print(inversion, insertion, deletion)
         if not inversion and not insertion and not deletion: events.append(0)
-        elif inversion and insertion: events.append(1)
-        elif inversion and deletion: events.append(2)
-        elif not inversion and insertion: events.append(3)
-        elif not inversion and deletion: events.append(4)
-        else: events.append(5)
+        elif inversion and not insertion and not deletion: events.append(1)
+        elif inversion and insertion: events.append(2)
+        elif inversion and deletion: events.append(3)
+        elif not inversion and insertion: events.append(4)
+        elif not inversion and deletion: events.append(5)
         # if test : # if no indel/inv,
 
-        genes_lev=[]
-        for i in range(0,5) :
+        genes_lev = []
+        for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
-        genes_level=np.mean(genes_lev,axis=0)
+        genes_level = np.mean(genes_lev,axis=0)
 
         #genes_level=start_transcribing(params,ind)
 
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
-        
+
         #if i%200==0:
         #     colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
         #     labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
@@ -419,16 +419,18 @@ def simulation():
         #     plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
         #     #plt.legend(labels[events])
         #     plt.show()
-        
+
 
     plotGenome(ind,'Final')
-    
-    fig = plt.figure()  
-    ax=plt.axes()
+
+    fig = plt.figure()
+    ax = plt.axes()
     colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
     labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
-    ax.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events],label=labels[events])
-    ax.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
+    X = np.array(range(len(fitnesses)))
+    Y = np.array(fitnesses)
+    ax.scatter(X, Y, s=20, c=colormap[events],label=labels[events])
+    ax.plot(X, Y, alpha=0.3, c='black')
     #plt.legend(handles=[pS])
     plt.show()
 
