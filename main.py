@@ -402,7 +402,7 @@ def simulation():
         # if test : # if no indel/inv,
 
         genes_lev = []
-        for j in range(0,1) :
+        for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
 

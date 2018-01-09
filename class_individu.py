@@ -139,10 +139,11 @@ class individu():
 		# if ratio>1 :
 		# 	ratio=1
 		if self.fitness<self.new_fitness :
-			if self.new_fitness-self.fitness<0.3 :
-				p=0
-			else :
-				p=1
+			p = int(self.new_fitness-self.fitness>=0.15)
+			# if self.new_fitness-self.fitness<0.3 :
+			# 	p=0
+			# else :
+			# 	p=1
 			# p=np.random.rand()
 		else :
 			p=0
