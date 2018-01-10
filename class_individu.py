@@ -147,7 +147,6 @@ class individu():
 			# p=np.random.rand()
 		else :
 			p=0
-		print(p)
 		# p = int(self.fitness-self.new_fitness>0.3)
 		#print(self.fitness,self.new_fitness,p)
 		#if p>ratio :
