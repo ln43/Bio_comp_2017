@@ -420,9 +420,6 @@ def simulation():
         #     #plt.legend(labels[events])
         #     plt.show()
 
-
-    plotGenome(ind,'Final')
-
     fig = plt.figure()
     ax = plt.axes()
     colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
@@ -431,8 +428,10 @@ def simulation():
     Y = np.array(fitnesses)
     ax.scatter(X, Y, s=20, c=colormap[events],label=labels[events])
     ax.plot(X, Y, alpha=0.3, c='black')
-    #plt.legend(handles=[pS])
+    # plt.legend(handles=labels)
     plt.show()
+
+    plotGenome(ind,'Final')
 
     return(fitnesses)
 

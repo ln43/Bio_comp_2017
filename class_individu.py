@@ -151,7 +151,7 @@ class individu():
 		#print(self.fitness,self.new_fitness,p)
 		#if p>ratio :
 		#if self.fitness<self.new_fitness:
-		if p>self.pkeep : # keep the old genome
+		if p>=self.pkeep : # keep the old genome
 			#print("Keep old")
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome
