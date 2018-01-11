@@ -134,20 +134,16 @@ class individu():
 
 	def choice_indiv(self) :
 		# we want to minimize fitness with a probability to keep the wrong genome anyway
-
-		# ratio=self.fitness/self.new_fitness
-		# if ratio>1 :
-		# 	ratio=1
 		if self.fitness<self.new_fitness :
-			p = int(self.new_fitness-self.fitness>=0.15)
+			p = int(self.new_fitness-self.fitness>=self.pkeep)
 		else :
 			p=0
-		#print(p)
+		print(self.new_fitness-self.fitness)
+		print(p)
 
 		#if p>ratio :
-
-		if p>self.pkeep : # keep the old genome
-			#print("Keep old")
+		p=0
+		if p==1 : # keep the old genome
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome
 			self.newTSS_pos = np.copy(self.TSS_pos)
@@ -156,7 +152,6 @@ class individu():
 			self.newnoms_genes = np.copy(self.noms_genes)
 			self.new_fitness = self.fitness
 		else: # keep the new genome, even if it doesn't improve the fitness
-			#print("Keep new")
 			self.TTS_pos = np.copy(self.newTTS_pos)
 			self.genome = self.newgenome
 			self.TSS_pos = np.copy(self.newTSS_pos)
