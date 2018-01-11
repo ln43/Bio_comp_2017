@@ -429,9 +429,11 @@ def simulation():
     labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
     X = np.array(range(len(fitnesses)))
     Y = np.array(fitnesses)
-    ax.scatter(X, Y, s=20, c=colormap[events],label=labels[events])
+    ax.scatter(X, Y, s=20, c=colormap[events])
     ax.plot(X, Y, alpha=0.3, c='black')
-    #plt.legend(handles=[pS])
+    plt.title("Fitness en fonction du temps")
+    plt.xlabel("Iterations")
+    plt.ylabel("Fitness")
     plt.show()
 
     return(fitnesses)
