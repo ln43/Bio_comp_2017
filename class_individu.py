@@ -140,19 +140,13 @@ class individu():
 		# 	ratio=1
 		if self.fitness<self.new_fitness :
 			p = int(self.new_fitness-self.fitness>=0.15)
-			# if self.new_fitness-self.fitness<0.3 :
-			# 	p=0
-			# else :
-			# 	p=1
-			# p=np.random.rand()
 		else :
 			p=0
-		print(p)
-		# p = int(self.fitness-self.new_fitness>0.3)
-		#print(self.fitness,self.new_fitness,p)
+		#print(p)
+
 		#if p>ratio :
-		#if self.fitness<self.new_fitness:
-		if p>=self.pkeep : # keep the old genome
+
+		if p>self.pkeep : # keep the old genome
 			#print("Keep old")
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome

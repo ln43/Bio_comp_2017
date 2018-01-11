@@ -1,0 +1,12 @@
+##gff-version 3#!gff-spec-version 1.20#!processor NCBI annotwriter##sequence-region tousgenesidentiques 1 30000
+indiv1	RefSeq	region	1	30000	.	+	.	ID=id1;Name=newindiv
+indiv1	RefSeq	gene	534	2422	.	+	.	IS=g1;Name=g1
+indiv1	RefSeq	gene	3548	5299	.	+	.	IS=g2;Name=g2
+indiv1	RefSeq	gene	7301	8161	.	+	.	IS=g3;Name=g3
+indiv1	RefSeq	gene	9577	10486	.	+	.	IS=g4;Name=g4
+indiv1	RefSeq	gene	13035	13432	.	+	.	IS=g5;Name=g5
+indiv1	RefSeq	gene	15824	17480	.	+	.	IS=g6;Name=g6
+indiv1	RefSeq	gene	18542	19457	.	+	.	IS=g7;Name=g7
+indiv1	RefSeq	gene	22325	23392	.	+	.	IS=g8;Name=g8
+indiv1	RefSeq	gene	25258	26219	.	+	.	IS=g9;Name=g9
+indiv1	RefSeq	gene	28467	29473	.	+	.	IS=g10;Name=g10

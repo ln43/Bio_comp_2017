@@ -291,7 +291,7 @@ def plotGenome(ind,title):
 ###########################################################
 
 def simulation():
-    INI_file="params.ini"
+    INI_file=input("Nom du fichier de configuration : ")
     output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
 
@@ -335,11 +335,11 @@ def simulation():
     os.makedirs(output_dir, exist_ok=True)
 
     # path to the input files (remove the "params.ini" from the path)
-    pth = INI_file[:-10]
-    gff_df_raw = load_gff(pth+GFF_file)
-    tss = load_tab_file(pth+TSS_file)
-    tts = load_tab_file(pth+TTS_file)
-    prot = load_tab_file(pth+Prot_file)
+    #pth = INI_file[:-10]
+    gff_df_raw = load_gff(GFF_file)
+    tss = load_tab_file(TSS_file)
+    tts = load_tab_file(TTS_file)
+    prot = load_tab_file(Prot_file)
     # Genome size
     genome_size = get_genome_size(gff_df_raw)
     gff_df = rename_gff_cols(gff_df_raw)
