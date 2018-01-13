@@ -16,9 +16,9 @@ os.chdir("INDIV_"+str(num_indiv))
 
 # WRITE GFF
 f = open("indiv"+str(num_indiv)+".gff", "a")
-f.write("##gff-version 3")
-f.write("#!gff-spec-version 1.20")
-f.write("#!processor NCBI annotwriter")
+f.write("##gff-version 3\n")
+f.write("#!gff-spec-version 1.20\n")
+f.write("#!processor NCBI annotwriter\n")
 f.write("##sequence-region tousgenesidentiques 1 30000\n")
 f.write("indiv"+str(num_indiv)+"	RefSeq	region	1	30000	.	+	.	ID=id1;Name=newindiv\n")
 
@@ -39,7 +39,7 @@ f.close()
 f = open("TSS"+str(num_indiv)+".dat", "a")
 f.write("TUindex	TUorient	TSS_pos	TSS_strength\n")
 for i in range(10) :
-    f.write(str(i)+"	"+signe[strands[i]]+"	"+str(TSS_pos[i])+"	"+".2"+"\n")
+    f.write(str(i)+"	"+signe[strands[i]]+"	"+str(TSS_pos[i])+"	"+".02"+"\n")
 f.close()
 
 # WRITE TTS.dat
