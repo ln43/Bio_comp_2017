@@ -6,12 +6,12 @@ class individu():
 		# Fichier .gff et .dat
 		self.tts = tts
 		self.newtts = pd.DataFrame.copy(tts)
-		
+
 		self.tss = tss
 		self.newtss = pd.DataFrame.copy(tss)
 		#self.gff_df=gff_df
 		#self.prot = prot
-		
+
 		self.DELTA_X=int(DELTA_X)
 
 		# Tailles du genome
@@ -22,7 +22,7 @@ class individu():
 		#self.TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
 		self.TSS_pos = tss['TSS_pos'].values
 		self.newTSS_pos = np.copy(self.TSS_pos)
-		
+
 		#self.TTS_pos = (tts['TTS_pos'].values/DELTA_X).astype(int)
 		self.TTS_pos = tts['TTS_pos'].values
 		self.newTTS_pos = np.copy(self.TTS_pos)
@@ -54,13 +54,13 @@ class individu():
 		newTTS_pos_disc=np.copy(TTS_pos_disc)
 		newTSS_pos_disc=np.copy(TSS_pos_disc)
 		newBarr_fix_disc=np.copy(Barr_fix_disc)
-		
+
 		coding=[]
 		for i in range(len(TTS_pos_disc)):
 			coding.extend(range(min(TTS_pos_disc[i],TSS_pos_disc[i]),
 			max(TTS_pos_disc[i],TSS_pos_disc[i])))
 		coding=np.unique([coding[i]+2 for i in range(len(coding))]+coding+[coding[i]-2 for i in range(len(coding))])
-		
+
 		inv1=np.random.randint(0,genome_disc)
 		while inv1 in coding: # test if inv1 belongs to non-coding part
 			inv1=np.random.randint(0,genome_disc)
@@ -118,7 +118,7 @@ class individu():
 
 
 		else: # Invert intern part
-		
+
 			#print("int")
 			S=list(set(np.ndarray.tolist(np.where(inv1<Tmin)[0])).intersection(np.ndarray.tolist(np.where(inv2>Tmax)[0])))
 			if len(S)!=0:
@@ -131,7 +131,7 @@ class individu():
 				ecart=inv1+inv2-max(TTS_pos_disc[S2[-1]],TSS_pos_disc[S2[-1]])-min(TSS_pos_disc[S2[0]],TTS_pos_disc[S2[0]])
 				newTSS_pos_disc[S2] = TSS_pos_disc[S2]+ecart
 				newTTS_pos_disc[S2] = TTS_pos_disc[S2]+ecart
-		
+
 		newT_temp=np.array([newTTS_pos_disc,newTSS_pos_disc])
 		newTmax=newT_temp.max(axis=0)
 		newTmin=newT_temp.min(axis=0)
@@ -139,17 +139,17 @@ class individu():
 		newTTS_pos_disc[self.newstrands>0]=newTmax[self.newstrands>0]
 		newTSS_pos_disc[self.newstrands<0]=newTmax[self.newstrands<0]
 		newTSS_pos_disc[self.newstrands>0]=newTmin[self.newstrands>0]
-		
+
 		newBarr_fix_disc=[0]
 		for i in range(0,len(self.Barr_fix)-1):
 				newBarr_fix_disc.append(int((min(newTSS_pos_disc[i+1],newTTS_pos_disc[i+1]) +max(newTSS_pos_disc[i],newTTS_pos_disc[i]))/2))
 		newBarr_fix_disc= np.asarray(newBarr_fix_disc)
-		
+
 		self.newBarr_fix=np.copy(newBarr_fix_disc)*self.DELTA_X
 		self.newTSS_pos=np.copy(newTSS_pos_disc)*self.DELTA_X
 		self.newTTS_pos=np.copy(newTTS_pos_disc)*self.DELTA_X
-		
-		
+
+
 		#self.upgrade_new_pd_dataframe()
 
 
@@ -158,7 +158,7 @@ class individu():
 		coding=[]
 		for i in range(len(self.TTS_pos)):
 			coding.extend(range(min(self.TTS_pos[i],self.TSS_pos[i]),max(self.TTS_pos[i],self.TSS_pos[i])))
-		
+
 		prob=np.random.rand(1)
 		if prob<0.5 : # Insertion
 			ind=np.random.randint(0,self.genome_size)
@@ -169,9 +169,9 @@ class individu():
 			self.newTTS_pos[np.where(ind<self.newTTS_pos)[0]]+=self.DELTA_X
 			self.newBarr_fix[np.where(ind<self.newBarr_fix)[0]]+=self.DELTA_X
 			self.newgenome+=self.DELTA_X
-			
+
 			#self.upgrade_new_pd_dataframe()
-			
+
 			return(1)
 		else : # Deletion
 			coding=np.unique([coding[i]+self.DELTA_X for i in range(len(coding))]+coding)
@@ -183,12 +183,12 @@ class individu():
 			self.newTTS_pos[np.where(ind<self.newTTS_pos)[0]]-=1
 			self.newBarr_fix[np.where(ind<self.newBarr_fix)[0]]-=1
 			self.newgenome-=1
-			
+
 			#self.upgrade_new_pd_dataframe()
-			
+
 			return(0)
-			
-			
+
+
 	def upgrade_new_pd_dataframe(self) :
 		self.newtss.TSS_pos=self.newTSS_pos
 		self.newtts.TTS_pos=self.newTTS_pos
@@ -198,8 +198,8 @@ class individu():
 			strands_sign.append(signes[i])
 		self.newtss.TUorient=strands_sign
 		self.newtts.TUorient=strands_sign
-		
-	
+
+
 
 	def calcul_fitness(self,genes_level) :
 		return (sum(abs((self.genes_level_envir-genes_level[np.argsort(self.newnoms_genes)]))/genes_level[np.argsort(self.newnoms_genes)]))
@@ -215,8 +215,7 @@ class individu():
 			p = int(self.new_fitness-self.fitness>=self.pkeep)
 		else :
 			p=0
-			
-		p=0
+
 		if p==1 : # keep the old genome
 			self.newTTS_pos = np.copy(self.TTS_pos)
 			self.newgenome = self.genome_size

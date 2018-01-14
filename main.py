@@ -293,7 +293,7 @@ def plotGenome(ind,title):
 
 def simulation():
     #INI_file=input("Nom du fichier de configuration : ")
-    INI_file="params1.ini"
+    INI_file="params.ini"
     output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
 
@@ -374,6 +374,7 @@ def simulation():
 
     #faire calculs
     events = [0]
+    genes_expr = [genes_level]
     for i in range(1, nb_iter+1):
         print(i)
         # test_modif=False
@@ -409,6 +410,8 @@ def simulation():
         for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
+        if i==nb_iter:
+            genes_expr.append(genes_level)
 
         #genes_level=start_transcribing(params,ind)
 
@@ -440,7 +443,9 @@ def simulation():
     plt.ylabel("Fitness")
     plt.show()
 
-    return(fitnesses)
+    print(fitnesses)
+
+    return(genes_expr)
 
 
 
@@ -697,6 +702,9 @@ def start_transcribing(p, ind):
         if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
             print("error Barr")
 
+        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
+            print("error Barr")
+
         # Update the position of polymerases still transcribing
         RNAPs_pos[np.where(RNAPs_strand == 1)]+=1
         RNAPs_pos[np.where(RNAPs_strand == -1)]-=1
@@ -705,6 +713,9 @@ def start_transcribing(p, ind):
         # Update the Dom_size (+1 or -1)
         Dom_size = np.ediff1d(Barr_pos)
         Dom_size = np.append(Dom_size, genome-Barr_pos[-1]+Barr_pos[0])
+
+        if np.any(Dom_size==0) :
+            print("error Dom")
 
         if np.any(Dom_size==0) :
             print("error Dom")
