@@ -354,7 +354,7 @@ def simulation():
     'DELTA_T':DELTA_T, 'RNAPS_NB':RNAPS_NB, 'ITERATIONS_NB':ITERATIONS_NB, \
     'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
-    'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
+    'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m, 'nb_iter':nb_iter, 'p_inv':p_inv, 'p_indel':p_indel, 'p_keep':p_keep}
     #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
 
     # Read Envir
@@ -377,29 +377,28 @@ def simulation():
     for i in range (nb_individus):
         tab_ind.append(copy.copy(ind))
     #plotGenome(ind,'Initial')
-    results = Parallel(n_jobs = num_cores)(delayed(simulation_individu)(i) for i in tab_ind)
-    print("The process took "+(start_time - time.time())+" seconds")
+    results = Parallel(n_jobs = num_cores)(delayed(simulation_individu)(tab_ind[i], params, i) for i in range (nb_individus))
+    print("The process took "+ str(start_time - time.time()) +" seconds")
 
-def simulation_individu(ind):
-    global compteur_ind 
-    compteur_ind += 1
-    print("Individu" + compteur_ind)
+def simulation_individu(ind, params, compteur):
+    np.random.seed()
+    print("Individu" + str(compteur))
     fitnesses = [ind.fitness]
     events = [0]
-    for i in range(1, nb_iter+1):
+    for i in range(1, params['nb_iter']+1):
         print(i)
         # test_modif=False
         inversion=False
         insertion=False
         deletion=False
         p=np.random.rand()
-        if p<p_inv:
+        if p<params['p_inv']:
             ind.inversion()
             # test_modif=True
             inversion=True
 
         p = np.random.rand()
-        if p<p_indel:
+        if p<params['p_indel']:
             ev = ind.indel()
             if ev==1:
                 insertion=True
