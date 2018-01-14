@@ -8,8 +8,11 @@ from pylab import *
 import errno
 import csv
 import matplotlib.pyplot as plt
+import time, multiprocessing, copy
+from joblib import Parallel, delayed
 
 RNAPs_genSC = 0.1
+compteur_ind = 0
 ###########################################################
 #                       Functions                         #
 ###########################################################
@@ -293,6 +296,8 @@ def plotGenome(ind,title):
 
 def simulation():
     #INI_file=input("Nom du fichier de configuration : ")
+    start_time = time.time()
+    num_cores = multiprocessing.cpu_count()
     INI_file="params.ini"
     output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
@@ -361,20 +366,26 @@ def simulation():
         genes[compteur] = line.split()[1]
         compteur += 1
 
-
+    
     # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X, genes, p_keep)
     genes_level = start_transcribing(params,ind)
     #print(genes_level)
     ind.fitness = ind.calcul_fitness(genes_level)
+    tab_ind = []
+    nb_individus = 10
+    for i in range (nb_individus):
+        tab_ind.append(copy.copy(ind))
+    #plotGenome(ind,'Initial')
+    results = Parallel(n_jobs = num_cores)(delayed(simulation_individu)(i) for i in tab_ind)
+    print("The process took "+(start_time - time.time())+" seconds")
 
-    plotGenome(ind,'Initial')
-
+def simulation_individu(ind):
+    global compteur_ind 
+    compteur_ind += 1
+    print("Individu" + compteur_ind)
     fitnesses = [ind.fitness]
-
-    #faire calculs
     events = [0]
-    genes_expr = [genes_level]
     for i in range(1, nb_iter+1):
         print(i)
         # test_modif=False
@@ -387,7 +398,7 @@ def simulation():
             # test_modif=True
             inversion=True
 
-        p=np.random.rand()
+        p = np.random.rand()
         if p<p_indel:
             ev = ind.indel()
             if ev==1:
@@ -410,8 +421,6 @@ def simulation():
         for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
-        if i==nb_iter:
-            genes_expr.append(genes_level)
 
         #genes_level=start_transcribing(params,ind)
 
@@ -442,11 +451,7 @@ def simulation():
     plt.xlabel("Iterations")
     plt.ylabel("Fitness")
     plt.show()
-
-    print(fitnesses)
-
-    return(genes_expr)
-
+    return(fitnesses)
 
 
 def start_transcribing(p, ind):
@@ -507,7 +512,7 @@ def start_transcribing(p, ind):
     TSS_pos = (ind.newTSS_pos/p['DELTA_X']).astype(int)
     TTS_pos = (ind.newTTS_pos/p['DELTA_X']).astype(int)
     genome =  int(ind.newgenome/p['DELTA_X'])
-
+    
 
     # just for the echo we can assign it directely
     Barr_pos = np.copy(Barr_fix)
@@ -608,7 +613,7 @@ def start_transcribing(p, ind):
             if len(tss_and_unhooked_RNAPs)!=len(all_prob):
                 print("error2")
 
-
+        
             picked_tr = np.random.choice(tss_and_unhooked_RNAPs, len(RNAPs_unhooked_id), replace=False, p=all_prob) #RNAPs_unhooked_id
 
             # This is the KEY !
@@ -698,10 +703,7 @@ def start_transcribing(p, ind):
 
         Barr_pos[np.where(Barr_type == -1)]-=1
         Barr_pos[np.where(Barr_type == 1)]+=1
-
-        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
-            print("error Barr")
-
+        
         if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
             print("error Barr")
 
@@ -713,10 +715,7 @@ def start_transcribing(p, ind):
         # Update the Dom_size (+1 or -1)
         Dom_size = np.ediff1d(Barr_pos)
         Dom_size = np.append(Dom_size, genome-Barr_pos[-1]+Barr_pos[0])
-
-        if np.any(Dom_size==0) :
-            print("error Dom")
-
+        
         if np.any(Dom_size==0) :
             print("error Dom")
 
@@ -796,3 +795,7 @@ def start_transcribing(p, ind):
     return(tr_nbr/sum(tr_nbr))
 
 print(simulation())
+
+
+
+
