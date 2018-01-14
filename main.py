@@ -8,8 +8,11 @@ from pylab import *
 import errno
 import csv
 import matplotlib.pyplot as plt
+import time, multiprocessing, copy
+from joblib import Parallel, delayed
 
 RNAPs_genSC = 0.1
+compteur_ind = 0
 ###########################################################
 #                       Functions                         #
 ###########################################################
@@ -293,6 +296,8 @@ def plotGenome(ind,title):
 
 def simulation():
     #INI_file=input("Nom du fichier de configuration : ")
+    start_time = time.time()
+    num_cores = multiprocessing.cpu_count()
     INI_file="params.ini"
     output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
@@ -361,18 +366,25 @@ def simulation():
         genes[compteur] = line.split()[1]
         compteur += 1
 
-
+    
     # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X, genes, p_keep)
     genes_level = start_transcribing(params,ind)
     #print(genes_level)
     ind.fitness = ind.calcul_fitness(genes_level)
-
+    tab_ind = []
+    nb_individus = 10
+    for i in range (nb_individus):
+        tab_ind.append(copy.copy(ind))
     #plotGenome(ind,'Initial')
+    results = Parallel(n_jobs = num_cores)(delayed(simulation_individu)(i) for i in tab_ind)
+    print("The process took "+(start_time - time.time())+" seconds")
 
+def simulation_individu(ind):
+    global compteur_ind 
+    compteur_ind += 1
+    print("Individu" + compteur_ind)
     fitnesses = [ind.fitness]
-
-    #faire calculs
     events = [0]
     for i in range(1, nb_iter+1):
         print(i)
@@ -386,7 +398,7 @@ def simulation():
             # test_modif=True
             inversion=True
 
-        p=np.random.rand()
+        p = np.random.rand()
         if p<p_indel:
             ev = ind.indel()
             if ev==1:
@@ -439,9 +451,7 @@ def simulation():
     plt.xlabel("Iterations")
     plt.ylabel("Fitness")
     plt.show()
-
     return(fitnesses)
-
 
 
 def start_transcribing(p, ind):
