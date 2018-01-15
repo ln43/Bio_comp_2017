@@ -292,8 +292,7 @@ def plotGenome(ind,title):
 ###########################################################
 
 def simulation():
-    #INI_file=input("Nom du fichier de configuration : ")
-    INI_file="params.ini"
+    INI_file=input("Nom du fichier de paramètres : ")
     output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
 
@@ -368,7 +367,7 @@ def simulation():
     #print(genes_level)
     ind.fitness = ind.calcul_fitness(genes_level)
 
-    #plotGenome(ind,'Initial')
+    plotGenome(ind,'Initial')
 
     fitnesses = [ind.fitness]
 
@@ -410,19 +409,9 @@ def simulation():
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
 
-        #genes_level=start_transcribing(params,ind)
-
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
-
-        #if i%200==0:
-        #     colormap = np.array(['grey', 'k', 'yellow','green', 'blue', 'red'])
-        #     labels = np.array(['No event', 'Inversion', 'Inversion + insertion', 'Inversion + deletion', 'Insertion', 'Deletion'])
-        #     plt.scatter(np.array(range(len(fitnesses))), np.array(fitnesses), s=20, c=colormap[events])
-        #     plt.plot(np.array(range(len(fitnesses))), np.array(fitnesses), alpha=0.3, c='black')
-        #     #plt.legend(labels[events])
-        #     plt.show()
 
 
     plotGenome(ind,'Final')
@@ -440,7 +429,7 @@ def simulation():
     plt.ylabel("Fitness")
     plt.show()
 
-    return(fitnesses)
+    return(fitnesses,events)
 
 
 
@@ -784,7 +773,9 @@ def start_transcribing(p, ind):
 
     return(tr_nbr/sum(tr_nbr))
 
-print(simulation())
+F,e=simulation()
+print(e)
+print(F)
 
 
 
