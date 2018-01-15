@@ -14,22 +14,6 @@ RNAPs_genSC = 0.1
 #                       Functions                         #
 ###########################################################
 
-
-
-# def create_config_file(config, config_file_path, TSS_file, SIGMA_0, RNAPS_NB): # DELTA_X, D, J_0, SIGMA_0, RNAPS_NB,
-#     # Create the directory
-#     # output_dir = "D_%d/delta_x_%d" %(D, DELTA_X)
-#     #os.makedirs(output_dir, exist_ok=True)
-#     # Create the config file
-#     config.set('INPUTS','TSS', str(TSS_file))
-#     #config.set('GLOBAL','D', str(D))
-#     #config.set('GLOBAL', 'J_0', str(J_0))
-#     #config.set('SIMULATION','DELTA_X', str(DELTA_X))
-#     config.set('SIMULATION','SIGMA_0', str(SIGMA_0))
-#     config.set('SIMULATION','RNAPS_NB', str(RNAPS_NB))
-#     with open(config_file_path, 'w') as configfile:
-#         config.write(configfile)
-
 # Read the config files
 def read_config_file(path):
     config = configparser.ConfigParser()
@@ -37,49 +21,6 @@ def read_config_file(path):
     config.optionxform = str
     config.read(path)
     return config
-
-
-
-# # Read the config files and return the values of each variable
-# # this function will be useful when we are in another script
-# def read_config_file_v2(path):
-#     config = configparser.ConfigParser()
-#     # to preserve capital letters
-#     config.optionxform = str
-#     config.read(path)
-#
-#     # get inputs infos from the config file
-#     GFF_file = config.get('INPUTS', 'GFF')
-#     TSS_file = config.get('INPUTS', 'TSS')
-#     TTS_file = config.get('INPUTS', 'TTS')
-#     Prot_file = config.get('INPUTS', 'BARR_FIX')
-#
-#     # get values from the config file
-#     m = config.getfloat('GLOBAL', 'm')
-#     sigma_t = config.getfloat('GLOBAL', 'sigma_t')
-#     epsilon = config.getfloat('GLOBAL', 'epsilon')
-#
-#     SIGMA_0 = config.getfloat('SIMULATION', 'SIGMA_0')
-#     DELTA_X = config.getfloat('SIMULATION', 'DELTA_X')
-#     DELTA_T = config.getfloat('SIMULATION', 'DELTA_T')
-#     RNAPS_NB = config.getint('SIMULATION', 'RNAPS_NB')
-#     ITERATIONS_NB = config.getfloat('SIMULATION', 'ITERATIONS_NB')
-#     OUTPUT_STEP = config.getfloat('SIMULATION', 'OUTPUT_STEP')
-#
-#     GYRASE_CONC = config.getfloat('SIMULATION', 'GYRASE_CONC')
-#     TOPO_CONC = config.getfloat('SIMULATION', 'TOPO_CONC')
-#     TOPO_CTE = config.getfloat('SIMULATION', 'TOPO_CTE')
-#     GYRASE_CTE = config.getfloat('SIMULATION', 'GYRASE_CTE')
-#     TOPO_EFFICIENCY = config.getfloat('SIMULATION', 'TOPO_EFFICIENCY')
-#     k_GYRASE = config.getfloat('SIMULATION', 'k_GYRASE')
-#     x0_GYRASE = config.getfloat('SIMULATION', 'x0_GYRASE')
-#     k_TOPO = config.getfloat('SIMULATION', 'k_TOPO')
-#     x0_TOPO = config.getfloat('SIMULATION', 'x0_TOPO')
-#     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
-#     #$print("SIGMA_0 --> ", SIGMA_0)
-#
-#     return GFF_file, TSS_file, TTS_file, Prot_file, m, sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO
-
 
 ###################### Reading files ######################
 
@@ -207,63 +148,11 @@ def get_TU_tts(tss, tts):
     return TU_tts
 
 def calc_sigma(Barr_sigma, GYRASE_CONC, k_GYRASE, x0_GYRASE, GYRASE_CTE, TOPO_CONC, k_TOPO, x0_TOPO, TOPO_CTE, DELTA_T): #RNAPs_genSC
-    '''
-    RNAPs_genSC : RNAPs_genSC = J_0 * Delta_X (~ 0.0066)
-                                J_0 : SC generated when RNAP moves by bp 0.00011
-    '''
-    #
+
     d_sigma = (-GYRASE_CONC*1/(1+np.exp(-k_GYRASE*(Barr_sigma-x0_GYRASE)))*GYRASE_CTE + TOPO_CONC*1/(1+np.exp(k_TOPO*(Barr_sigma-x0_TOPO)))*TOPO_CTE) * DELTA_T
     Barr_sigma += d_sigma
 
     return Barr_sigma
-
-''' ###################### Saving files #######################
-
-def save_files(output_dir,
-                Barr_pos, Barr_type, Dom_size, Barr_ts_remain, Barr_sigma,
-                tr_nbr, tr_times, save_RNAPs_info, save_tr_info,
-                save_Barr_sigma, save_Dom_size, save_mean_sig_wholeGenome,
-                DELTA_X, RNAPs_genSC,
-                RNAPs_tr, RNAPs_pos, RNAPs_unhooked_id,
-                init_rate, Kon, RNAPS_NB, SIGMA_0, GYRASE_CONC, TOPO_CONC):
-
-    if RNAPs_genSC != 0:
-        output_dir += "/withSC_Kon_%.06f/RNAPn_%s/Sig0_%s/Gyrase_%s_TopoI_%s/" %(Kon[0], RNAPS_NB, SIGMA_0, GYRASE_CONC, TOPO_CONC)
-    else:
-        output_dir += "/withoutSC_Kon_%.06f/RNAPn_%s/Sig0_%s/Gyrase_%s_TopoI_%s/" %(Kon[0], RNAPS_NB, SIGMA_0, GYRASE_CONC, TOPO_CONC)
-
-    # make sure that the output direcory exists, and create one if it's not
-    os.makedirs("%s/resume_sim" %output_dir, exist_ok=True)
-    os.makedirs("%s/all_res" %output_dir, exist_ok=True)
-
-    # save tr_nbr
-    tr_nbr = pd.Series(tr_nbr)
-    tr_nbr.to_csv("%s/save_tr_nbr.csv" %output_dir, sep=';', index=False) #, header = ["Diffusion = " + str(D)])
-
-    # convert tr_times dict to pandas serie
-    tr_times = pd.DataFrame.from_dict(tr_times, orient='index') #pd.DataFrame([tr_times]) #pd.Series(tr_times)
-    # save the tr_times to csv file
-    tr_times.to_csv("%s/save_tr_times.csv" %output_dir, sep=';', index=True, header = False)
-
-    # Save last info
-    np.savez("%s/resume_sim/resume_sim_RNAPs.npz" %output_dir, RNAPs_tr = RNAPs_tr,
-                                                               RNAPs_pos = RNAPs_pos,
-                                                               RNAPs_unhooked_id = RNAPs_unhooked_id)
-
-    np.savez("%s/resume_sim/resume_sim_tr.npz" %output_dir, tr_nbr = tr_nbr,
-                                                            init_rate = init_rate)
-
-    np.savez("%s/resume_sim/resume_sim_Barr.npz" %output_dir, Barr_pos = Barr_pos,
-                                                              Barr_type = Barr_type,
-                                                              Dom_size = Dom_size,
-                                                              Barr_ts_remain = Barr_ts_remain,
-                                                              Barr_sigma = Barr_sigma)
-
-    # Save all info
-    np.savez("%s/all_res/save_RNAPs_info" %output_dir, RNAPs_info = save_RNAPs_info)
-    np.savez("%s/all_res/save_tr_info" %output_dir, tr_info = save_tr_info)
-    np.savez("%s/all_res/save_sigma_info" %output_dir, Barr_sigma_info = save_Barr_sigma, Dom_size_info = save_Dom_size, mean_sig_wholeGenome = save_mean_sig_wholeGenome) '''
-
 
 def plotGenome(ind,title):
     fig = plt.figure()
@@ -281,28 +170,28 @@ def plotGenome(ind,title):
     plt.legend(handles=[pB,pTSS,pTTS])
     plt.ylim([0.5,1.5])
     for i, txt in enumerate(ind.noms_genes) :
-        plt.annotate(txt, (ind.TSS_pos[i]+5,0.95))
+        plt.annotate(txt, (min(ind.TSS_pos[i],ind.TTS_pos[i])+5,0.95))
     plt.title('Genome '+title)
     plt.axis('off')
 
     plt.show()
 
 ###########################################################
-#         Transcription Process (Simulation)              #
+#              Main process (Simulation)                  #
 ###########################################################
 
 def simulation():
+    # Get params file
     INI_file=input("Nom du fichier de paramètres : ")
-    output_dir="OUTPUTDIR"
     config = read_config_file(INI_file)
 
-    # get inputs infos from the config file
+    # Get inputs infos from the config file
     GFF_file = config.get('INPUTS', 'GFF')
     TSS_file = config.get('INPUTS', 'TSS')
     TTS_file = config.get('INPUTS', 'TTS')
     Prot_file = config.get('INPUTS', 'BARR_FIX')
 
-    # get values from the config file
+    # Get values from the config file
     m = config.getfloat('GLOBAL', 'm')
     sigma_t = config.getfloat('GLOBAL', 'sigma_t')
     epsilon = config.getfloat('GLOBAL', 'epsilon')
@@ -328,19 +217,12 @@ def simulation():
     p_indel = config.getfloat('SIMULATION', 'p_indel')
     p_keep  = config.getfloat('SIMULATION', 'p_keep')
     nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
-    #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
-    #$print("SIGMA_0 --> ", SIGMA_0)
 
-
-    # define the output directory
-    os.makedirs(output_dir, exist_ok=True)
-
-    # path to the input files (remove the "params.ini" from the path)
-    #pth = INI_file[:-10]
     gff_df_raw = load_gff(GFF_file)
     tss = load_tab_file(TSS_file)
     tts = load_tab_file(TTS_file)
     prot = load_tab_file(Prot_file)
+    
     # Genome size
     genome_size = get_genome_size(gff_df_raw)
     gff_df = rename_gff_cols(gff_df_raw)
@@ -349,7 +231,6 @@ def simulation():
     'OUTPUT_STEP':OUTPUT_STEP, 'GYRASE_CONC':GYRASE_CONC, 'TOPO_CONC':TOPO_CONC, \
     'TOPO_CTE':TOPO_CTE, 'GYRASE_CTE':GYRASE_CTE, 'TOPO_EFFICIENCY':TOPO_EFFICIENCY, \
     'k_GYRASE':k_GYRASE, 'x0_GYRASE':x0_GYRASE, 'k_TOPO':k_TOPO, 'x0_TOPO':x0_TOPO, 'm':m}
-    #params = [sigma_t, epsilon, SIGMA_0, DELTA_X, DELTA_T, RNAPS_NB, ITERATIONS_NB, OUTPUT_STEP, GYRASE_CONC, TOPO_CONC, TOPO_CTE, GYRASE_CTE, TOPO_EFFICIENCY, k_GYRASE, x0_GYRASE, k_TOPO, x0_TOPO, m]
 
     # Read Envir
     f_env = open("environment.dat", "r")
@@ -363,29 +244,35 @@ def simulation():
 
     # Create individu
     ind = individu(gff_df, tss, tts, prot, genome_size, DELTA_X, genes, p_keep)
+    
+    # Initialize fitness
     genes_level = start_transcribing(params,ind)
-    #print(genes_level)
+    genes_level=genes
     ind.fitness = ind.calcul_fitness(genes_level)
 
+    # Plot genome initial
     plotGenome(ind,'Initial')
 
-    fitnesses = [ind.fitness]
-
-    #faire calculs
-    events = [0]
-    genes_expr = [genes_level]
+    # Simulations
+    events = [0] # to save all events index
+    genes_expr = [genes_level] # to save all genes levels
+    fitnesses = [ind.fitness] # to save all fitnesses
+    
     for i in range(1, nb_iter+1):
+        
         print(i)
-        # test_modif=False
+        
         inversion=False
         insertion=False
         deletion=False
+        
+        # Inversion
         p=np.random.rand()
         if p<p_inv:
             ind.inversion()
-            # test_modif=True
             inversion=True
 
+        # Insertion Deletion
         p=np.random.rand()
         if p<p_indel:
             ev = ind.indel()
@@ -393,32 +280,39 @@ def simulation():
                 insertion=True
             else:
                 deletion=True
-            # test_modif=True
-        # print(inversion, insertion, deletion)
+                
+        # Get index of event
         if not inversion and not insertion and not deletion: events.append(0)
         elif inversion and not insertion and not deletion: events.append(1)
         elif inversion and insertion: events.append(2)
         elif inversion and deletion: events.append(3)
         elif not inversion and insertion: events.append(4)
         elif not inversion and deletion: events.append(5)
-        # if test : # if no indel/inv,
 
+        # Set data frame attributs of ind (with values calculated in inversion and/or insertion/deletion
         ind.upgrade_new_pd_dataframe()
 
+        # Simulate transcription and get genes level expression
         genes_lev = []
         for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
+
         if i==nb_iter:
             genes_expr.append(genes_level)
 
+        # Set new fitness
         ind.new_fitness=ind.calcul_fitness(genes_level)
+        
+        # Choose individual to keep according to fitnesses
         ind.choice_indiv()
         fitnesses.append(ind.fitness)
 
 
+    # Plot final genome
     plotGenome(ind,'Final')
 
+    # Plot Fitnesses over time with color for each event
     fig = plt.figure()
     ax = plt.axes()
     colormap = np.array(['grey', 'red', 'yellow','green', 'blue', 'm'])
@@ -432,16 +326,11 @@ def simulation():
     plt.ylabel("Fitness")
     plt.show()
 
-<<<<<<< HEAD
-    return(fitnesses,events)
-=======
-    print(fitnesses)
+    return(fitnesses,events,genes_expr)
 
-    return(genes_expr)
->>>>>>> origin/master
-
-
-
+###########################################################
+#         Transcription Process (Simulation)              #
+###########################################################
 def start_transcribing(p, ind):
     # TSS_pos
     # TSS_pos = (tss['TSS_pos'].values/DELTA_X).astype(int)
@@ -788,7 +677,11 @@ def start_transcribing(p, ind):
 
     return(tr_nbr/sum(tr_nbr))
 
-F,e=simulation()
+F,e,g=simulation()
+print("\nList of events :")
 print(e)
+print("\nList of fitnesses :")
 print(F)
+print("\nList of genes_level :")
+print(g)
 
