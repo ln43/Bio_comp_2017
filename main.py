@@ -373,6 +373,7 @@ def simulation():
 
     #faire calculs
     events = [0]
+    genes_expr = [genes_level]
     for i in range(1, nb_iter+1):
         print(i)
         # test_modif=False
@@ -408,6 +409,8 @@ def simulation():
         for j in range(0,5) :
             genes_lev.append(start_transcribing(params,ind))
         genes_level = np.mean(genes_lev,axis=0)
+        if i==nb_iter:
+            genes_expr.append(genes_level)
 
         ind.new_fitness=ind.calcul_fitness(genes_level)
         ind.choice_indiv()
@@ -429,7 +432,13 @@ def simulation():
     plt.ylabel("Fitness")
     plt.show()
 
+<<<<<<< HEAD
     return(fitnesses,events)
+=======
+    print(fitnesses)
+
+    return(genes_expr)
+>>>>>>> origin/master
 
 
 
@@ -491,7 +500,7 @@ def start_transcribing(p, ind):
     TSS_pos = (ind.newTSS_pos/p['DELTA_X']).astype(int)
     TTS_pos = (ind.newTTS_pos/p['DELTA_X']).astype(int)
     genome =  int(ind.newgenome/p['DELTA_X'])
-    
+
 
     # just for the echo we can assign it directely
     Barr_pos = np.copy(Barr_fix)
@@ -592,7 +601,7 @@ def start_transcribing(p, ind):
             if len(tss_and_unhooked_RNAPs)!=len(all_prob):
                 print("error2")
 
-        
+
             picked_tr = np.random.choice(tss_and_unhooked_RNAPs, len(RNAPs_unhooked_id), replace=False, p=all_prob) #RNAPs_unhooked_id
 
             # This is the KEY !
@@ -682,7 +691,10 @@ def start_transcribing(p, ind):
 
         Barr_pos[np.where(Barr_type == -1)]-=1
         Barr_pos[np.where(Barr_type == 1)]+=1
-        
+
+        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
+            print("error Barr")
+
         if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
             print("error Barr")
 
@@ -694,7 +706,10 @@ def start_transcribing(p, ind):
         # Update the Dom_size (+1 or -1)
         Dom_size = np.ediff1d(Barr_pos)
         Dom_size = np.append(Dom_size, genome-Barr_pos[-1]+Barr_pos[0])
-        
+
+        if np.any(Dom_size==0) :
+            print("error Dom")
+
         if np.any(Dom_size==0) :
             print("error Dom")
 
@@ -776,7 +791,4 @@ def start_transcribing(p, ind):
 F,e=simulation()
 print(e)
 print(F)
-
-
-
 
