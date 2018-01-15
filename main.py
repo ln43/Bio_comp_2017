@@ -478,19 +478,6 @@ def start_transcribing(p, ind):
             # create the numpy array that will contains [ nTSS , Unhooked RNAPS ]
             tss_and_unhooked_RNAPs = np.concatenate([tss_id, np.full(len(RNAPs_unhooked_id), -1, dtype=int)])
 
-            # pick up
-            if len(np.where(all_prob==0)[0])>0:
-                print("error")
-            if len(all_prob)-len(np.where(all_prob==0))<len(RNAPs_unhooked_id) :
-                print("error")
-            if len(all_prob)<len(RNAPs_unhooked_id):
-                print(all_prob)
-            if len(tss_and_unhooked_RNAPs)<len(RNAPs_unhooked_id) :
-                print(tss_and_unhooked_RNAPs)
-            if len(tss_and_unhooked_RNAPs)!=len(all_prob):
-                print("error2")
-
-
             picked_tr = np.random.choice(tss_and_unhooked_RNAPs, len(RNAPs_unhooked_id), replace=False, p=all_prob) #RNAPs_unhooked_id
 
             # This is the KEY !
@@ -559,8 +546,6 @@ def start_transcribing(p, ind):
 
         # and remove them
         Barr_pos = np.delete(Barr_pos, rm_RNAPs_idx)
-        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
-            print("error Barr")
         Barr_type = np.delete(Barr_type, rm_RNAPs_idx)
         Barr_ts_remain = np.delete(Barr_ts_remain, rm_RNAPs_idx)
         Barr_sigma = np.delete(Barr_sigma, rm_RNAPs_idx)
@@ -581,12 +566,6 @@ def start_transcribing(p, ind):
         Barr_pos[np.where(Barr_type == -1)]-=1
         Barr_pos[np.where(Barr_type == 1)]+=1
 
-        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
-            print("error Barr")
-
-        if max(np.unique(Barr_pos,return_counts=True)[1])>1 :
-            print("error Barr")
-
         # Update the position of polymerases still transcribing
         RNAPs_pos[np.where(RNAPs_strand == 1)]+=1
         RNAPs_pos[np.where(RNAPs_strand == -1)]-=1
@@ -595,12 +574,6 @@ def start_transcribing(p, ind):
         # Update the Dom_size (+1 or -1)
         Dom_size = np.ediff1d(Barr_pos)
         Dom_size = np.append(Dom_size, genome-Barr_pos[-1]+Barr_pos[0])
-
-        if np.any(Dom_size==0) :
-            print("error Dom")
-
-        if np.any(Dom_size==0) :
-            print("error Dom")
 
         # UPDATE SIGMA
         # R_plus_pos : the ids of RNA pol in the + strand
@@ -677,6 +650,10 @@ def start_transcribing(p, ind):
 
     return(tr_nbr/sum(tr_nbr))
 
+
+###########################################################
+#                          GO !                           #
+###########################################################
 F,e,g=simulation()
 print("\nList of events :")
 print(e)
