@@ -334,6 +334,7 @@ def simulation():
     p_indel = config.getfloat('SIMULATION', 'p_indel')
     p_keep  = config.getfloat('SIMULATION', 'p_keep')
     nb_iter = int(config.getfloat('SIMULATION', 'nb_iter'))
+    nb_individus = int(config.getfloat('SIMULATION', 'nb_individus'))
     #SIGMA_0 = 0 #((-np.log(((GYRASE_CONC*GYRASE_CTE)/TOPO_CONC*TOPO_CTE)-1))/k)+x_0
     #$print("SIGMA_0 --> ", SIGMA_0)
 
@@ -373,7 +374,7 @@ def simulation():
     #print(genes_level)
     ind.fitness = ind.calcul_fitness(genes_level)
     tab_ind = []
-    nb_individus = 10
+     = 10
     for i in range (nb_individus):
         tab_ind.append(copy.copy(ind))
     #plotGenome(ind,'Initial')
@@ -382,7 +383,7 @@ def simulation():
 
 def simulation_individu(ind, params, compteur):
     np.random.seed()
-    print("Individu" + str(compteur))
+    print("Individu" + str(compteur + 1))
     fitnesses = [ind.fitness]
     events = [0]
     for i in range(1, params['nb_iter']+1):
