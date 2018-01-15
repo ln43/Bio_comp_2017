@@ -247,7 +247,6 @@ def simulation():
     
     # Initialize fitness
     genes_level = start_transcribing(params,ind)
-    genes_level=genes
     ind.fitness = ind.calcul_fitness(genes_level)
 
     # Plot genome initial
